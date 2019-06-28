@@ -60,7 +60,7 @@
           user_id: 1,
           path: this.form.folder,
           options: JSON.stringify(defaultOptions),
-          styles: JSON.stringify(defaultOptions.style)
+          styles: JSON.stringify([defaultOptions.style])
         }).then(res => {
           console.log("65", res)
           if (res.data.status == '500') {

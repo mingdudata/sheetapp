@@ -50,6 +50,7 @@
           this.data = JSON.parse(response.data.sheet_details)
           this.options = JSON.parse(response.data.sheet_options)
           this.styles = JSON.parse(response.data.sheet_styles)
+          console.log("53", this.data)
           var d1 = document.getElementById(('x-spreadsheet-demo'));
           var d2 = document.getElementsByClassName('x-spreadsheet')[0];
           if (d1 !== undefined && d2 !== undefined) {
