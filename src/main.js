@@ -25,14 +25,17 @@ router.beforeEach((to, from, next) => {
     if (to.path == '/login') {
       next('/home')
     } else {
-      if (to.path != "/home" && constantRouterMap[1].children.length <= 0) {
-        console.log("26")
-        next('/home')
+      if (to.path != "/home" && to.path != "/document" && constantRouterMap[1].children.length <= 0) {
+        next({
+          path: '/home',
+          query: {
+            redirect: to.fullPath
+          }
+        });
+        store.commit('SET_ACTIVE_INDEX', to.fullPath)
       } else {
         next()
       }
-      // })
-      // next()
     }
   } else {
     if (to.path == '/login') { //如果是登录页面路径，就直接next()

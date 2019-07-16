@@ -79,7 +79,7 @@
                   message: '登录成功',
                   type: 'success'
                 });
-                setToken("token")
+                setToken(this.ruleForm.username)
                 this.$router.push({path: '/home'})
               }
             })

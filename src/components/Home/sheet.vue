@@ -3,22 +3,18 @@
     <el-tabs class="marinner" @tab-click="tabClick" @dblclick.native="changeTabName" v-model="editableTabsValue"
              type="card" closable
              @edit="handleTabsEdit">
-      <el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title"
+       <el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title"
                    :name="item.name">
       </el-tab-pane>
     </el-tabs>
-    <router-view/>
+     <router-view/>
   </div>
 </template>
 
 <script>
   import ElTree from './ElTree'
-  import Edit from '../../components/Edit'
   import NavMenu from "./NavMenu.vue";
   import New from './new'
-  import {styles} from "../styles";
-  import Vue from 'vue'
-  import {constantRouterMap} from "../../router";
 
   export default {
     components: {
@@ -36,7 +32,6 @@
     },
     methods: {
       handleTabsEdit(targetName, action) {
-        console.log(targetName, "2777")
         if (action === 'add') {
           let newTabName = ++this.tabIndex + '';
           this.editableTabs.push({
@@ -97,7 +92,6 @@
                   this_dom.removeChild(this_dom.getElementsByTagName("input")[0])
                   this.isEdit = 1;
                   return;
-                  console.log("103, 103: onke", this.isEdit)
                 })
               }
             }

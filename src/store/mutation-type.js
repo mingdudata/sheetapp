@@ -1,6 +1,3 @@
-export const SET_ROLES = 'SET_ROLES';
-export const SET_NAME = 'SET_NAME';
-export const SET_AVATAR = 'SET_AVATAR';
-export const SET_INTRODUCTION = 'SET_INTRODUCTION';
-export const SET_TOKEN = 'SET_TOKEN'
-export const LOAD_ROUTER = 'LOAD_ROUTER'
+export const SET_ACTIVE_INDEX = 'SET_ACTIVE_INDEX';
+export const SET_ENTITY = 'SET_ENTITY';
+export const SET_MENU_DATA = 'SET_MENU_DATA';

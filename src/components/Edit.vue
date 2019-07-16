@@ -6,6 +6,7 @@
 
 <script>
   import Xspreadsheet from 'x-spreadsheet-master'
+  import {mapMutations} from 'vuex'
 
   export default {
     name: "Edit",
@@ -21,12 +22,10 @@
       }
     },
     mounted() {
-      console.log("24",this.sheet_id)
       if(this.sheet_id == null || this.sheet_id == undefined) {
         this.$router.push({path: '/home'})
         return;
       }
-      console.log("23...")
       this.reqTableData()
     },
     methods: {
@@ -75,6 +74,8 @@
                 styles: JSON.stringify(data.styles),
                 options: JSON.stringify(self.options),
                 id: self.sheet_id
+              }).then(res => {
+                self.$emit("loadCatalogueData");
               })
             }, 2000)
           });
