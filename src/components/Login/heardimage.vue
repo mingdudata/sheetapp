@@ -1,25 +1,24 @@
 <template>
   <div>
-    <div class="demo-basic--circle" style="text-align: center; margin-top: 20px" @click="clickavatar">
-      <el-popover placement="left-end" width="200" trigger="click" content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+    <div class="demo-basic--circle" style="text-align: center; margin-top: 30px">
+      <el-popover @hide="deletedom" placement="left-end" width="200" trigger="click" content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
         <div>
           <div style="height: 50px">
             <span style="display: inline-block; margin-top: 10px; font-weight: bold; font-size: 20px">{{username}}</span>
             <img :src="squareUrl" style="width: 50px ; height: 50px; float: right; "/>
           </div>
           <el-divider></el-divider>
-
           <i @click="logout" style="font-size: 32px; float: right; display: inline-block; margin-right: 10px" class="el-icon-top"/>
         </div>
-        <el-avatar slot="reference" shape="square" size="small" :src="squareUrl"></el-avatar>
+        <el-avatar slot="reference" shape="square" :size="'large'" :src="squareUrl"></el-avatar>
       </el-popover>
     </div>
   </div>
 </template>
 
 <script>
-  import {getToken} from "../../utils/auth";
-  import {removeToken} from "../../utils/auth";
+  import {getToken, getToken2} from "../../utils/auth";
+  import {removeToken, removeToken2} from "../../utils/auth";
 
   export default {
     data() {
@@ -30,12 +29,21 @@
         username: getToken(),
       }
     },
+    mounted() {
+      let wxuser = getToken2("wxuser");
+      if(wxuser) {
+        this.squareUrl = JSON.parse(wxuser).headimage;
+      }
+    },
     methods: {
       clickavatar() {
-        removeToken();
         console.log("20...")
       },
+      deletedom() {
+      },
       logout() {
+        removeToken();
+        removeToken2('wxuser');
         this.$router.push({path: '/login'})
       }
     },

@@ -3,10 +3,10 @@
     <New @create="pushIntoMenuData" v-if="showNewCompent == true" :navMenus="menuData" @receive="receive"
          :dialogFormVisible="dialogFormVisible"/>
     <el-row class="tac" style="height: 100%; width: 100%;">
-      <el-col style="height: 100%; width: 280px;" :span="4">
+      <el-col style="height: 100%; width: 280px; background: #FBFBFB" :span="4">
         <el-scrollbar class="el-cala" style="height: 100%">
           <div>
-            <views  @loadCatalogueData="loadCatalogueData"/>
+            <views @loadCatalogueData="loadCatalogueData"/>
             <el-button icon="el-icon-plus" @click="openNewButton" round style="margin: 12px">New</el-button>
           </div>
         </el-scrollbar>
@@ -134,7 +134,6 @@
       }),
       loadCatalogueData() {
         this.loadCataloguePromise().then(res => {
-          console.log("137")
           this.setMenuData(res.data);
         })
       },

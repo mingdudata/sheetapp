@@ -1,16 +1,6 @@
-import axios from 'axios'
-
-export function getUserInfo(token) {
-  return axios.get(this.EDIT + "", {
-    params: {
-
-    }
-  });
-}
-
-export function loginByUsername( username, password, edit) {
-  return this.$axios.post(edit + "/edit/edit_login", {
-    username: username,
-    password: password
+export function loginByWeixin(axios, EDIT, data) {
+  let {code} = data;
+  return axios.post(EDIT + "/wx/login", {
+    code: code
   });
 }

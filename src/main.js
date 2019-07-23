@@ -7,10 +7,11 @@ import router, {constantRouterMap} from './router'
 import axios from 'axios'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css';
-import {getToken} from './utils/auth'
+import {getToken, setToken, setToken2} from './utils/auth'
 import Element from 'element-ui'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
+import {loginByWeixin} from "./components/api/login";
 
 Vue.use(contentmenu)
 Vue.config.productionTip = false
@@ -22,7 +23,9 @@ Vue.use(Element)
 
 router.beforeEach((to, from, next) => {
   if (getToken()) {
-    if (to.path == '/login') {
+    if (to.path == '/weixincallback') {
+      next('/home')
+    } else if (to.path == '/login') {
       next('/home')
     } else {
       if (to.path != "/home" && to.path != "/document" && constantRouterMap[1].children.length <= 0) {
@@ -38,7 +41,13 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if (to.path == '/login') { //如果是登录页面路径，就直接next()
+    if (to.path == '/weixincallback') {
+      loginByWeixin(axios, 'http://192.168.31.33:5010/edit', {code: to.query.code}).then(res => {
+        setToken2("wxuser", res.data.data);
+        setToken(res.data.data.nickname);
+        window.close();
+      });
+    } else if (to.path == '/login') { //如果是登录页面路径，就直接next()
       next();
     } else { //不然就跳转到登录；
       next('/login');

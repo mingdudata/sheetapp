@@ -1,7 +1,8 @@
 const state = {
   active_index: "",
   entity: {},
-  menuData: []
+  menuData: [],
+  wxwindow: null,
 }
 
 export default state

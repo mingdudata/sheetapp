@@ -1,14 +1,16 @@
 <template>
-  <div style="margin-top: 5px">
-    <el-menu router :default-active="index" class="el-menu-vertical-demo" @select="handleOpen" @close="handleClose">
+  <div style="margin-top: 5px; background: #FBFBFB">
+    <el-menu router  class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
       <div v-for="(item, index) in data">
-        <el-menu-item  :index="'/home' + item.path">
-          <i class="el-icon-document"></i>
-          <span slot="title" style="  width: 72%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap; display: inline-block">{{item.alias}}</span>
-          <div style="display: inline-block; position: absolute; right: 20px ; ">
-            <span style="position: relative; top: 5px; font-size: 12px; color: rgb(169, 169, 169);  ">
+        <el-menu-item :index="'/home' + item.path">
+          <div @contextmenu.prevent="rightShow(item)">
+            <i class="el-icon-document"></i>
+            <span slot="title" style="width: 60%; overflow: hidden; text-overflow:ellipsis; white-space: nowrap; display: inline-block">{{item.alias}}</span>
+            <div style="display: inline-block; position: absolute; right: 20px ; ">
+            <span style="position: relative; top: 2px; font-size: 12px; color: rgb(169, 169, 169);  ">
            {{item.sheet_date}}
           </span>
+            </div>
           </div>
         </el-menu-item>
       </div>
@@ -24,12 +26,17 @@
   export default {
     methods: {
       ...mapMutations({
-        setActiveIndex: "SET_ACTIVE_INDEX"
+        setActiveIndex: "SET_ACTIVE_INDEX",
+        setEntity: "SET_ENTITY"
       }),
+      rightShow(entity) {
+        console.log("34", entity)
+        this.setEntity(entity);
+      },
       handleOpen(key, keyPath) {
         let keyData = null;
         Object.keys(this.data).forEach(i => {
-          if('/home' + this.data[i].path == key) {
+          if ('/home' + this.data[i].path == key) {
             keyData = this.data[i];
           }
         });
@@ -45,7 +52,6 @@
         openFileRecentlyApi(this.$axios, this.EDIT, args).then(() => {
           this.setActiveIndex(key);
         });
-        // this.$emit('getData', 1)
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);
@@ -59,10 +65,14 @@
     },
     data() {
       return {
-        index: ""
+        index: "",
+        load: false
       }
     },
     watch: {
+      data() {
+        console.log("75")
+      },
       $route(to, from) {
         this.setActiveIndex(to.path);
         this.index = to.path;
@@ -75,8 +85,12 @@
       }
     },
     mounted() {
+      this.load = false;
       this.index = this.active_index;
-      this.$emit('getData', '')
+      setTimeout(() => {
+        this.load = true;
+      })
+      // this.$emit('getData', '')
     }
   }
 </script>

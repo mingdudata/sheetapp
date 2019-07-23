@@ -3,15 +3,15 @@
     <div>
       <div style="margin-left: 20px; margin-top: 10px; display: inline-block; letter-spacing: 5px">
       <span @click="handler(1)">
-        <span v-if="change == 1" style="font-size: 26px; color: blue"><i class="el-icon-tickets"></i></span>
-        <span class="hover-tip" data-tooltip="打开" v-else style="font-size: 26px;  ">
+        <span v-if="change == 1" style="font-size: 26px; color: #0EAA10"><i class="el-icon-tickets"></i></span>
+        <span class="hover-tip" data-tooltip="打开最近" v-else style="font-size: 26px;  ">
           <i class="el-icon-document"></i></span>
       </span>
         <span @click="handler(2)">
-        <span v-if="change == 2" style="font-size: 26px; color: blue">
+        <span v-if="change == 2" style="font-size: 26px; color: #0EAA10">
           <i class="el-icon-folder-opened"></i>
         </span>
-        <span class="hover-tip" data-tooltip="打开" v-else style="font-size: 26px">
+        <span class="hover-tip" data-tooltip="打开目录" v-else style="font-size: 26px">
           <i class="el-icon-folder"></i>
         </span>
       </span>
@@ -24,15 +24,19 @@
 
     <div style="min-height: 100px" v-loading="loading" element-loading-spinner="el-icon-loading">
       <div v-show="change == 1">
-        <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
+        <div v-contextmenu:contextmenu>
+          <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
+          <v-contextmenu ref="contextmenu">
+            <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
+          </v-contextmenu>
+        </div>
       </div>
       <div v-show="change == 2">
         <div v-contextmenu:contextmenu>
-          <el-menu router :default-active="index" @select="open">
+          <el-menu  background-color="#FBFBFB"  router :default-active="index" @select="open">
             <nav-menu :navMenus="menuData"/>
           </el-menu>
           <v-contextmenu ref="contextmenu">
-            <!--<v-contextmenu-item @click="removeFile">删除该文件</v-contextmenu-item>-->
             <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
           </v-contextmenu>
         </div>
@@ -86,6 +90,10 @@
         this.setActiveIndex(to.path);
         this.index = to.path;
       },
+      menuData() {
+        console.log("94...")
+        this.getData("");
+      }
     },
     computed: {
       ...mapGetters([
@@ -96,11 +104,11 @@
     },
     mounted() {
       this.index = this.active_index;
-      this.getData("");
+      // this.getData("");
     },
     methods: {
       ...mapMutations({
-        setActiveIndex: "SET_ACTIVE_INDEX"
+        setActiveIndex: "SET_ACTIVE_INDEX",
       }),
       changeFileName() {
         changeFileNameApi(this.$axios, this.EDIT, {_id: this.entity.id, name: this.input}).then(res => {
@@ -136,10 +144,10 @@
         openFileRecentlyApi(this.$axios, this.EDIT, args);
       },
       getData(fileName) {
-        console.log("80", fileName)
+        // this.change2 = 2;
         let loadTimer = setTimeout(() => {
           this.loading = true;
-        }, 1000);
+        }, 50);
         getOpenFileRecentlyApi(this.$axios, this.EDIT, {user_id: getToken(), file_name: fileName}).then(res => {
           this.data = res.data.data;
           if (this.data.length)
@@ -150,6 +158,7 @@
           this.loading = false;
           clearTimeout(loadTimer);
         });
+
       }
     }
   }
@@ -167,8 +176,7 @@
     top: 45px;
     font-size: 10px;
     z-index: 1000000;
-
-    white-space: pre !important;
+    letter-spacing: 1px;
   }
 
   .hover-tip:hover:after {

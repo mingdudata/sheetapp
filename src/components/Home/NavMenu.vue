@@ -6,9 +6,9 @@
                       :key="navMenu.entity.id" :data="navMenu" :index="'/home' + navMenu.entity.path + ''">
         <div @contextmenu.prevent="rightShow(navMenu.entity)">
           <i :class="navMenu.entity.icon"></i>
-          <span slot="title" style="  width: 72%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap; display: inline-block">{{navMenu.entity.alias}}</span>
+          <span slot="title" style="  width: 68%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap; display: inline-block">{{navMenu.entity.alias}}</span>
           <div style="display: inline-block; position: absolute; right: 20px ; ">
-            <span style="position: relative; top: 5px; font-size: 12px; color: rgb(169, 169, 169);  ">
+            <span style="position: relative; top: 1px; font-size: 12px; color: rgb(169, 169, 169);  ">
             {{navMenu.entity.sheet.date}}
           </span>
           </div>
@@ -52,7 +52,6 @@
         setEntity: "SET_ENTITY"
       }),
       rightShow(entity) {
-        console.log("48", entity)
         this.setEntity(entity);
       }
     }

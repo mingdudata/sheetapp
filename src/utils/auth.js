@@ -6,10 +6,26 @@ export function getToken() {
   return Cookies.get(TokenKey)
 }
 
+export function getToken2(TokenKey) {
+  return Cookies.get(TokenKey)
+}
+
+
 export function setToken(token) {
+  return Cookies.set(TokenKey, token)
+}
+
+export function setToken2(TokenKey, token) {
   return Cookies.set(TokenKey, token)
 }
 
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
+
+export function removeToken2(TokenKey) {
+  return Cookies.remove(TokenKey)
+}
+
+export const weixin_url =
+  "https://open.weixin.qq.com/connect/qrconnect?appid=wx4df0678ff967e226&redirect_uri=http%3a%2f%2f192.168.31.33:8080/weixincallback&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";

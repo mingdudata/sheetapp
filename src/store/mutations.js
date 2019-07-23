@@ -12,6 +12,9 @@ const mutations = {
   },
   [types.SET_MENU_DATA](state, name) {
     state.menuData = name;
+  },
+  [types.SET_WX_WINDOW](state, name) {
+    state.wxwindow = name;
   }
 }
 
