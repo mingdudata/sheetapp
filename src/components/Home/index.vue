@@ -291,8 +291,8 @@
         }
       },
       pushIntoMenuData(value) {
-        console.log(value)
-        this.setMenuData(res.data);
+        console.log(value, "./...294")
+        this.setMenuData(value);
       },
       receive(value) {
         console.log("90...", value)
@@ -326,6 +326,7 @@
       },
       loadSheetData(item) {
         return new Promise((resolve, reject) => {
+          console.log("item", item.sheet)
           this.$axios.get(this.EDIT + "/edit_find", {
             params: {
               id: item.sheet.id

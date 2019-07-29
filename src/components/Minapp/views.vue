@@ -24,7 +24,7 @@
           <app @openiframe="openiframe" :menu="menu"/>
         </div>
         <div v-show="change == 2">
-          2
+          敬请期待
         </div>
       </div>
     </div>

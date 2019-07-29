@@ -32,5 +32,6 @@ export {constantRouterMap}
 
 export default new Router({
   mode: 'history',
+  base: "sheetapp",
   routes: constantRouterMap
 })
