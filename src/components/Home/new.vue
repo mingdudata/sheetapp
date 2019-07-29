@@ -22,7 +22,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="talkParent">取 消</el-button>
-        <el-button type="primary" @click="addAFile">确 定</el-button>
+        <el-button type="primary" @click="addAFile" :loading="loading">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -30,9 +30,13 @@
 
 <script>
   import {defaultOptions} from "../styles";
+  import {getToken2} from "../../utils/auth";
+  import {dirBuilder} from "../core/builder";
+  import {constantRouterMap} from "../../router";
+  import {edit, p} from "../component/edit/edit_component";
 
   export default {
-    props: ["dialogFormVisible", 'navMenus'],
+    props: ["dialogFormVisible", 'navMenus', "self"],
     methods: {
       talkParent() {
         this.$emit('receive', false)
@@ -46,44 +50,72 @@
         })
       },
       addAFile() {
-        if (this.form.name == '') {
+        if (this.form.name == '' || this.form.folderType == '') {
           this.$message({
-            message: '文件名不能为空',
+            message: '文件信息不能为空',
             type: 'warning'
           });
           return;
         }
-
+        let user = getToken2('user');
+        if (!user) {
+          this.$message({
+            message: '您还没有登录哦~',
+            type: 'error'
+          });
+          this.removeToken2('user');
+          this.$router.push({path: '/login'})
+          return;
+        }
+        this.loading = true;
         this.$axios.post(this.EDIT + "/edit_catalogue/add", {
           alias: this.form.name,
           folder_type: this.form.folderType,
-          user_id: 1,
+          user_id: user.id,
           path: this.form.folder,
           options: JSON.stringify(defaultOptions),
           styles: JSON.stringify([defaultOptions.style])
         }).then(res => {
-          console.log("65", res)
           if (res.data.status == '500') {
             this.$message({
               message: res.data.data,
               type: 'warning'
             });
           } else {
-            this.$emit('create', res.data.data)
+            this.$emit('create', res.data.data);
             this.$message({
               message: '创建成功',
               type: 'success'
             });
-            this.folder = []
+
+            if (res.data.sheet) {
+              let entity = dirBuilder(res.data.sheet);
+              let routerMap = [];
+              constantRouterMap[1].children.push(edit(this.self, {path: p + entity.path + "", id:  entity.id}));
+              routerMap.push(constantRouterMap[1])
+              this.$router.addRoutes(routerMap);
+            }
+            this.addRootDirectory();
             this.filterNavMenus(res.data.data);
-            this.talkParent()
+            this.talkParent();
+            this.loading = false;
           }
+        }).catch(error => {
+          this.loading = false;
         })
       },
+      addRootDirectory() {
+        this.folder = []
+        this.folder.push({
+          alias: "/",
+          path: "/"
+        });
+      }
     },
     created() {
+      this.addRootDirectory();
       this.filterNavMenus(this.navMenus)
-      console.log(this.folder)
+      console.log(this.folder, "95")
     },
     watch: {
       dialogFormVisible(o_v, n_v) {
@@ -109,6 +141,7 @@
             id: "folder"
           },
         ],
+        loading: false,
         copyDialogFormVisible: this.dialogFormVisible,
         gridData: [{
           date: '2016-05-02',

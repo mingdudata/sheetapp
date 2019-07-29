@@ -50,7 +50,7 @@
     },
     mounted() {
       this.loading = true;
-      userappApi(this.$axios, this.EDIT, {user_id: JSON.parse(getToken2("user")).id}).then(res => {
+      userappApi(this.$axios, this.EDIT, {user_id: getToken2("user").id}).then(res => {
         this.menu = res.data.data;
         this.loading = false;
       });
@@ -61,7 +61,7 @@
           clearTimeout(this.timer);
           this.timer = setTimeout(() => {
             this.loading = true;
-            userappApi(this.$axios, this.EDIT, {user_id: JSON.parse(getToken2("user")).id}).then(res => {
+            userappApi(this.$axios, this.EDIT, {user_id:  getToken2("user").id}).then(res => {
               this.menu = res.data.data;
               this.loading = false;
             });

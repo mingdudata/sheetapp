@@ -16,7 +16,7 @@
       }
 
       loginByWeixin(this.$axios, this.EDIT, {code: this.$route.query.code}).then(res => {
-        setToken2("wxuser", res.data.data);
+        setToken2("user", res.data.data);
         setToken(res.data.data.nickname);
         window.close();
       });

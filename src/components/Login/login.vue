@@ -123,21 +123,6 @@
         }, 1000);
       },
       LoginByUsername() {
-        // console.log("117", this.ruleForm)
-        // if (this.ruleForm.username == '') {
-        //   this.$message({
-        //     message: '请输入用户名',
-        //     type: 'error'
-        //   });
-        //   return;
-        // }
-        // if (this.ruleForm.password == '') {
-        //   this.$message({
-        //     message: '请输入密码',
-        //     type: 'error'
-        //   });
-        //   return;
-        // }
         let res = this.$axios.post(this.EDIT + "/edit_login", {
           username: this.ruleForm.username + "",
           password: this.ruleForm.password + ""
@@ -155,6 +140,7 @@
         }
       },
       submitForm() {
+        this.loading = true;
         let res = this.$axios.post(this.EDIT + "/edit_login", {
           username: this.ruleForm.username + "",
           password: this.ruleForm.password + ""
@@ -174,6 +160,9 @@
             setToken2("user", res.data.data)
             this.$router.push({path: '/home'})
           }
+          this.loading = false;
+        }).catch(err => {
+          this.loading = false;
         })
       },
       resetForm(formName) {

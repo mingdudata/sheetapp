@@ -7,13 +7,15 @@ import router, {constantRouterMap} from './router'
 import axios from 'axios'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css';
-import {getToken, setToken, setToken2} from './utils/auth'
+import {getToken, setToken, setToken2 ,getToken2} from './utils/auth'
 import Element from 'element-ui'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import {loginByWeixin} from "./components/api/login";
+import Edit from './components/component/edit'
 
-Vue.use(contentmenu)
+Vue.use(Edit);
+Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
@@ -22,7 +24,7 @@ Vue.prototype.$axios = axios;
 Vue.use(Element)
 
 router.beforeEach((to, from, next) => {
-  if (getToken()) {
+  if (getToken() || getToken2("user")) {
     if (to.path == '/weixincallback') {
       next('/home')
     } else if (to.path == '/login') {
@@ -43,7 +45,7 @@ router.beforeEach((to, from, next) => {
   } else {
     if (to.path == '/weixincallback') {
       loginByWeixin(axios, 'http://192.168.31.33:5010/edit', {code: to.query.code}).then(res => {
-        setToken2("wxuser", res.data.data);
+        setToken2("user", res.data.data);
         setToken(res.data.data.nickname);
         window.close();
       });

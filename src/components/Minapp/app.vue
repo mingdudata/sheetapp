@@ -42,7 +42,7 @@
         let item = this.findApp(key);
         this.$emit("openiframe", item.app_url);
 
-        insertUserappApi(this.$axios, this.EDIT, {user_id: JSON.parse(getToken2("user")).id, app_id: item.id});
+        insertUserappApi(this.$axios, this.EDIT, {user_id: getToken2("user").id, app_id: item.id});
       }
     }
   }

@@ -1,6 +1,6 @@
 <template xmlns:v-contextmenu="http://www.w3.org/1999/xhtml">
   <div class="contain" style="width: 100%; height: 100%; overflow: hidden" @click="hideInput">
-    <New @create="pushIntoMenuData" v-if="showNewCompent == true" :navMenus="menuData" @receive="receive"
+    <New :self="this" @create="pushIntoMenuData" v-if="showNewCompent == true" :navMenus="menuData" @receive="receive"
          :dialogFormVisible="dialogFormVisible"/>
     <el-row class="tac" style="height: 100%; width: 100%;">
       <el-col style="height: 100%; width: 280px; background: #FBFBFB" :span="4">
@@ -23,13 +23,12 @@
   import Views from './views'
   import New from './new'
   import {styles} from "../styles";
-  import Vue from 'vue'
-  import Edit from '../../components/Edit'
   import {constantRouterMap} from "../../router";
   import Sheet from './sheet'
   import {openFileRecentlyApi} from "../api/folder";
-  import {getToken} from "../../utils/auth";
+  import {getToken, getToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
+  import {edit, p} from "../component/edit/edit_component";
 
   export default {
     name: "index",
@@ -107,13 +106,12 @@
         let routerMap = [];
         let pm = [];
         routerMap.push(constantRouterMap[1])
-
-        this.create_route_b(this.menuData, pm, "/home")
+        this.create_route_b(this.menuData, pm, p)
         routerMap[0].children = pm;
         this.$router.addRoutes(routerMap);
 
         let redirect = this.$route.query.redirect;
-        if(redirect) {
+        if (redirect) {
           let exist = false
           Object.keys(pm).forEach(e => {
             if (pm[e].path == redirect)
@@ -308,7 +306,7 @@
       loadCatalogue() {
         this.$axios.get(this.EDIT + "/edit_catalogue", {
           params: {
-            user_id: 1
+            user_id: getToken2('user').id
           }
         }).then(res => {
           this.setMenuData(res.data);
@@ -316,10 +314,21 @@
         })
       },
       loadCataloguePromise() {
+        let user = getToken2('user');
+        if (!user) {
+          this.$message({
+            message: '您还没有登录哦~',
+            type: 'error'
+          });
+          this.removeToken2('user');
+          this.$router.push({path: '/login'})
+          return;
+        }
+
         return new Promise((resolve, reject) => {
           resolve(this.$axios.get(this.EDIT + "/edit_catalogue", {
             params: {
-              user_id: 1
+              user_id: user.id
             }
           }))
         })
@@ -382,31 +391,12 @@
         })
       },
       create_route_b(dir, arr, p) {
-        let self = this;
         dir.forEach((a_dir) => {
           if (a_dir.childs) {
             this.create_route_b(a_dir.childs, arr, p)
           } else {
-            let args = {
-              path: p + a_dir.entity.path + "",
-              name: a_dir.entity.id,
-              component: Vue.component('edit', {
-                data: function () {
-                  return {
-                    id: a_dir.entity.sheet_id
-                  }
-                },
-                methods: {
-                  loadCatalogueData() {
-                    console.log("400")
-                    self.loadCatalogueData();
-                  }
-                },
-                components: {Edit},
-                template: '<el-scrollbar style="height: 100%;"><Edit :sheet_id="id"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
-              }),
-            }
-            arr.push(args)
+            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id});
+            arr.push(args);
           }
         })
       },

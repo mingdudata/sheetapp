@@ -1,30 +1,28 @@
-import Cookies from 'js-cookie'
-
 const TokenKey = 'Admin-Token'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return localStorage.getItem(TokenKey);
 }
 
 export function getToken2(TokenKey) {
-  return Cookies.get(TokenKey)
+  console.log(JSON.parse(localStorage.getItem(TokenKey)))
+  return JSON.parse(localStorage.getItem(TokenKey));
 }
 
-
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return localStorage.setItem(TokenKey, token);
 }
 
 export function setToken2(TokenKey, token) {
-  return Cookies.set(TokenKey, token)
+  return localStorage.setItem(TokenKey, JSON.stringify(token));
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return localStorage.removeItem(TokenKey);
 }
 
 export function removeToken2(TokenKey) {
-  return Cookies.remove(TokenKey)
+  return localStorage.removeItem(TokenKey);
 }
 
 export const weixin_url =

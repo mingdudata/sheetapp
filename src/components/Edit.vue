@@ -19,14 +19,20 @@
         data: '',
         options: {},
         trade_code: '',
+        xs: null,
+        date: 0
       }
     },
     mounted() {
+      console.log("27...")
       if (this.sheet_id == null || this.sheet_id == undefined) {
         this.$router.push({path: '/home'})
         return;
       }
       this.reqTableData()
+    },
+    destroyed() {
+      this.date = "";
     },
     methods: {
       addUrlRelPath(query) {
@@ -34,10 +40,12 @@
         return query
       },
       loadSheetData() {
+        this.date = Date.now();
         return new Promise((resolve, reject) => {
           this.$axios.get(this.EDIT + "/edit_find", {
             params: {
-              id: this.sheet_id
+              id: this.sheet_id,
+              date: this.date
             }
           }).then(response => {
             resolve(response)
@@ -69,12 +77,35 @@
       diff(obj1, obj2) {
         return JSON.stringify(obj1) == JSON.stringify(obj2);
       },
+      loadNeatFlex(neat_flex) {
+        if (neat_flex) {
+          return neat_flex.neat_flex;
+        }
+        return {};
+      },
+      loadRowAndCol(options, neat_flex) {
+        if (neat_flex) {
+          options.row = {
+            len: neat_flex["rows"],
+          };
+
+          options.col = {
+            len: neat_flex["col"],
+          };
+        }
+
+        return options;
+      },
       reqTableData() {
         this.loadSheetData().then(response => {
+            console.log(response.data.date, this.date);
+            if(response.data.date != this.date) {
+              return;
+            }
             this.data = typeof response.data.sheet_details == 'string'
               ? JSON.parse(response.data.sheet_details) : response.data.sheet_details;
 
-            console.log(this.data, "76", response.data.sheet_details)
+            console.log(response, 78)
             // this.options = typeof response.data.sheet_options == 'string'
             //   ? JSON.parse(response.data.sheet_options) : response.data.sheet_options;
             if (JSON.stringify(response.data.sheet_styles) == "{}") {
@@ -93,7 +124,7 @@
                   formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
                     id: formula.id
                   }).then(res => {
-                    if(res.data.enter == "wland" || res.data.enter == "wfr") {
+                    if (res.data.enter == "wland" || res.data.enter == "wfr") {
                       let args = {};
                       if (JSON.stringify(res.data.sheet_styles) == "{}") {
                         args['styles'] = formula.styles;
@@ -101,7 +132,7 @@
 
                       args['rows'] = typeof res.data.sheet_details == 'string'
                         ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
-                      console.log(args , "102",  res.data.sheet_details);
+                      args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
                       data.setData(args);
                       table.render();
                     }
@@ -109,21 +140,23 @@
                 }, 500);
               }
             };
-
+            this.options = this.loadRowAndCol(this.options, response.data.neat_flex);
             // this.options = wlandOption;
             var d1 = document.getElementById(('x-spreadsheet-demo'));
             var d2 = document.getElementsByClassName('x-spreadsheet')[0];
             if (d1 !== undefined && d2 !== undefined) {
               d1.removeChild(d2);
             }
-            let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options)
+
+            let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
             xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
+                flex: this.loadNeatFlex(response.data.neat_flex)
               }
             ).change(data => {
-              let self = this
+              let self = this;
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
                 self.refresh = true

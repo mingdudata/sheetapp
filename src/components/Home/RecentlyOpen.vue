@@ -1,14 +1,15 @@
 <template>
   <div style="margin-top: 5px; background: #FBFBFB">
-    <el-menu router  class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
+    <el-menu router class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
       <div v-for="(item, index) in data">
         <el-menu-item :index="'/home' + item.path">
           <div @contextmenu.prevent="rightShow(item)">
             <i class="el-icon-document"></i>
-            <span slot="title" style="width: 60%; overflow: hidden; text-overflow:ellipsis; white-space: nowrap; display: inline-block">{{item.alias}}</span>
+            <span slot="title"
+                  style="width: 60%; overflow: hidden; text-overflow:ellipsis; white-space: nowrap; display: inline-block">{{item.alias}}</span>
             <div style="display: inline-block; position: absolute; right: 20px ; ">
             <span style="position: relative; top: 2px; font-size: 12px; color: rgb(169, 169, 169);  ">
-           {{item.sheet_date}}
+              {{item.sheet_date}}
           </span>
             </div>
           </div>
