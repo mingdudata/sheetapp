@@ -156,8 +156,8 @@
               message: '登录成功',
               type: 'success'
             });
-            setToken(this.ruleForm.username)
-            setToken2("user", res.data.data)
+            setToken(this.ruleForm.username);
+            setToken2("user", res.data.data);
             this.$router.push({path: '/home'})
           }
           this.loading = false;

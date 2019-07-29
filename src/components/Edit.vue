@@ -88,18 +88,23 @@
           options.row = {
             len: neat_flex["rows"],
           };
-
+          options.rowWidth = {
+            state: !0,
+            width: 240
+          };
           options.col = {
             len: neat_flex["col"],
           };
         }
-
+        options.view = {
+          height: () => 150 * 25,
+        };
         return options;
       },
       reqTableData() {
         this.loadSheetData().then(response => {
             console.log(response.data.date, this.date);
-            if(response.data.date != this.date) {
+            if (response.data.date != this.date) {
               return;
             }
             this.data = typeof response.data.sheet_details == 'string'
@@ -122,7 +127,8 @@
                 clearTimeout(formula.timer);
                 formula.timer = setTimeout(() => {
                   formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
-                    id: formula.id
+                    id: formula.id,
+                    date: Date.now()
                   }).then(res => {
                     if (res.data.enter == "wland" || res.data.enter == "wfr") {
                       let args = {};

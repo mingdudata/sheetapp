@@ -9,7 +9,10 @@ let edit = (self, {path, id}) => {
     component: Vue.component('edit', {
       data: function () {
         return {
-          id: id
+          id: id,
+          style: {
+            height: document.documentElement.clientHeight + "px"
+          }
         }
       },
       methods: {
@@ -18,7 +21,7 @@ let edit = (self, {path, id}) => {
         }
       },
       components: {Edit},
-      template: '<el-scrollbar style="height: 100%;"><Edit :sheet_id="id"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
+      template: '<el-scrollbar :style="style"><Edit :sheet_id="id"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
     }),
   };
   return args;
