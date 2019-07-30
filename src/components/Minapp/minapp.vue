@@ -18,6 +18,7 @@
 <script>
   import Views from '../Minapp/views'
   import {getToken} from "../../utils/auth";
+  import {loginUrl} from "../config";
 
   export default {
     components: {
@@ -31,12 +32,11 @@
     methods: {
       openiframe(src) {
         console.log("33",  src)
-        if(src.indexOf("192.168.31.9:8022")) {
-          console.log("35")
+        if(src.indexOf(loginUrl)) {
           const iframe = document.getElementById('myIframe').contentWindow;
           iframe.postMessage(JSON.stringify({
             "id": getToken()
-          }), 'http://192.168.31.9:8022');
+          }), loginUrl);
         }
         this.asrc = src;
       }
