@@ -19,7 +19,7 @@ Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
-Vue.prototype.EDIT = 'http://192.168.31.33:5010/edit'
+Vue.prototype.EDIT = 'http://192.168.31.9:5017/edit'
 Vue.prototype.$axios = axios;
 Vue.use(Element)
 
@@ -44,7 +44,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.path == '/weixincallback') {
-      loginByWeixin(axios, 'http://192.168.31.33:5010/edit', {code: to.query.code}).then(res => {
+      loginByWeixin(axios, 'http://192.168.31.9:5017/edit', {code: to.query.code}).then(res => {
         setToken2("user", res.data.data);
         setToken(res.data.data.nickname);
         window.close();

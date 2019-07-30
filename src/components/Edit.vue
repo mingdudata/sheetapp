@@ -126,7 +126,7 @@
               wland(formula, data, table) {
                 clearTimeout(formula.timer);
                 formula.timer = setTimeout(() => {
-                  formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                  formula.axios.post("http://192.168.31.9:5017/edit/edit_find", {
                     id: formula.id,
                     date: Date.now()
                   }).then(res => {
