@@ -26,7 +26,7 @@
   import {constantRouterMap} from "../../router";
   import Sheet from './sheet'
   import {openFileRecentlyApi} from "../api/folder";
-  import {getToken, getToken2} from "../../utils/auth";
+  import {getToken, getToken2, removeToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
   import {edit, p} from "../component/edit/edit_component";
 

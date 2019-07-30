@@ -30,7 +30,7 @@
 
 <script>
   import {defaultOptions} from "../styles";
-  import {getToken2} from "../../utils/auth";
+  import {getToken2, removeToken2} from "../../utils/auth";
   import {dirBuilder} from "../core/builder";
   import {constantRouterMap} from "../../router";
   import {edit, p} from "../component/edit/edit_component";
