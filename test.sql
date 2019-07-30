@@ -11,7 +11,7 @@
  Target Server Version : 50718
  File Encoding         : 65001
 
- Date: 26/07/2019 22:05:27
+ Date: 30/07/2019 11:47:23
 */
 
 SET NAMES utf8mb4;
@@ -141,7 +141,7 @@ CREATE TABLE `minapp` (
   `date` varchar(1024) NOT NULL,
   `visible` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of minapp
@@ -149,6 +149,7 @@ CREATE TABLE `minapp` (
 BEGIN;
 INSERT INTO `minapp` VALUES (1, '明读数据', 'http://180.169.75.199:5007/s/', '/static/Images/mindu.png', '2019-07-18', 1);
 INSERT INTO `minapp` VALUES (2, 'es的图形化操作', 'http://192.168.31.9:5601', 'https://raw.githubusercontent.com/elastic/kibana/12b93bcdd1054a34f3e336ecc9217fc8ff9c6883/x-pack/test_utils/chrome_extension/test_subjects_finder/images/kibana128.png', '2019-07-18', 2);
+INSERT INTO `minapp` VALUES (3, '校正平台', 'http://192.168.31.9:8023', '/static/Images/mindu.png', '2019-07-18', 1);
 COMMIT;
 
 -- ----------------------------
@@ -485,21 +486,21 @@ CREATE TABLE `recently_file` (
   `date` varchar(1024) NOT NULL,
   `user_id` int(124) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of recently_file
 -- ----------------------------
 BEGIN;
-INSERT INTO `recently_file` VALUES (44, '/home/tt/xx', '2019-07-26 20:37:30', 123456);
-INSERT INTO `recently_file` VALUES (45, '/home/tt/dd', '2019-07-26 20:37:31', 123456);
-INSERT INTO `recently_file` VALUES (46, '/home/tt/00', '2019-07-26 21:38:38', 123456);
-INSERT INTO `recently_file` VALUES (47, '/home/tt/111', '2019-07-26 20:38:03', 123456);
-INSERT INTO `recently_file` VALUES (48, '/home/tt/xxzz', '2019-07-26 20:44:52', 123456);
+INSERT INTO `recently_file` VALUES (44, '/home/tt/xx', '2019-07-30 11:27:10', 123456);
+INSERT INTO `recently_file` VALUES (45, '/home/tt/dd', '2019-07-30 11:27:23', 123456);
+INSERT INTO `recently_file` VALUES (46, '/home/tt/00', '2019-07-30 11:27:00', 123456);
+INSERT INTO `recently_file` VALUES (47, '/home/tt/111', '2019-07-30 11:27:02', 123456);
+INSERT INTO `recently_file` VALUES (48, '/home/tt/xxzz', '2019-07-30 11:27:03', 123456);
 INSERT INTO `recently_file` VALUES (49, '/home/tt/fffff', '2019-07-26 20:45:28', 123456);
-INSERT INTO `recently_file` VALUES (50, '/home/tt/zx', '2019-07-26 21:46:58', 123456);
-INSERT INTO `recently_file` VALUES (51, '/home/tt/asdasd', '2019-07-26 21:46:59', 123456);
-INSERT INTO `recently_file` VALUES (52, '/home/tt/zxczxc', '2019-07-26 21:47:02', 123456);
+INSERT INTO `recently_file` VALUES (50, '/home/tt/zx', '2019-07-30 11:27:03', 123456);
+INSERT INTO `recently_file` VALUES (51, '/home/tt/asdasd', '2019-07-30 11:27:04', 123456);
+INSERT INTO `recently_file` VALUES (52, '/home/tt/zxczxc', '2019-07-30 11:27:04', 123456);
 COMMIT;
 
 -- ----------------------------
@@ -542,7 +543,7 @@ CREATE TABLE `user_app` (
   `user_id` int(11) NOT NULL,
   `app_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_app
@@ -552,6 +553,9 @@ INSERT INTO `user_app` VALUES (1, 4, 1);
 INSERT INTO `user_app` VALUES (4, 11, 1);
 INSERT INTO `user_app` VALUES (5, 4, 2);
 INSERT INTO `user_app` VALUES (6, 12, 1);
+INSERT INTO `user_app` VALUES (7, 1, 2);
+INSERT INTO `user_app` VALUES (8, 1, 1);
+INSERT INTO `user_app` VALUES (9, 1, 3);
 COMMIT;
 
 -- ----------------------------
