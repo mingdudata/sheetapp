@@ -4,7 +4,7 @@
          :dialogFormVisible="dialogFormVisible"/>
     <el-row class="tac" style="height: 100%; width: 100%;">
       <el-col style="height: 100%; width: 280px; background: #FBFBFB" :span="4">
-        <el-scrollbar class="el-cala" style="height: 100%">
+        <el-scrollbar class="el-cala" style="height: 100%;  ">
           <div>
             <views @loadCatalogueData="loadCatalogueData"/>
             <el-button icon="el-icon-plus" @click="openNewButton" round style="margin: 12px">New</el-button>
@@ -395,7 +395,7 @@
           if (a_dir.childs) {
             this.create_route_b(a_dir.childs, arr, p)
           } else {
-            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id});
+            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id });
             arr.push(args);
           }
         })

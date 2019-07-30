@@ -3,12 +3,12 @@
     <div>
       <div style="margin-left: 20px; margin-top: 10px; display: inline-block; letter-spacing: 5px">
       <span @click="handler(1)">
-        <span v-if="change == 1" style="font-size: 26px; color: #0EAA10"><i class="el-icon-tickets"></i></span>
+        <span v-if="change2 == 1" style="font-size: 26px; color: #0EAA10"><i class="el-icon-tickets"></i></span>
         <span class="hover-tip" data-tooltip="打开最近" v-else style="font-size: 26px;  ">
           <i class="el-icon-document"></i></span>
       </span>
         <span @click="handler(2)">
-        <span v-if="change == 2" style="font-size: 26px; color: #0EAA10">
+        <span v-if="change2 == 2" style="font-size: 26px; color: #0EAA10">
           <i class="el-icon-folder-opened"></i>
         </span>
         <span class="hover-tip" data-tooltip="打开目录" v-else style="font-size: 26px">
@@ -18,11 +18,11 @@
       </div>
 
       <div>
-        <search @opensearchpane="handler" @getData="getData" @setData="setData"/>
+        <search @setLabel="setLabel"  @setChange="setChange" @getData2="getData2" @opensearchpane="handler" @getData="getData" @setData="setData"/>
       </div>
     </div>
 
-    <div style="min-height: 100px" v-loading="loading" element-loading-spinner="el-icon-loading">
+    <div style="min-height: 100px"  element-loading-spinner="el-icon-loading">
       <div v-show="change == 1">
         <div v-contextmenu:contextmenu>
           <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
@@ -33,7 +33,7 @@
       </div>
       <div v-show="change == 2">
         <div v-contextmenu:contextmenu>
-          <el-menu  background-color="#FBFBFB"  router :default-active="index" @select="open">
+          <el-menu  background-color="#FBFBFB"  active-text-color="rgb(14, 170, 16)" router :default-active="index" @select="open">
             <nav-menu :navMenus="menuData"/>
           </el-menu>
           <v-contextmenu ref="contextmenu">
@@ -62,8 +62,8 @@
   import RecentlyOpen from "./RecentlyOpen"
   import Search from './search'
   import SearchOpen from './SearchOpen'
-  import {changeFileNameApi, getOpenFileRecentlyApi, openFileRecentlyApi} from "../api/folder";
-  import {getToken} from "../../utils/auth";
+  import {changeFileNameApi, getOpenFileRecentlyApi, openFileRecentlyApi, getOpenFileApi} from "../api/folder";
+  import {getToken, getToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
 
   export default {
@@ -77,6 +77,8 @@
     data() {
       return {
         change: 1,
+        change2: 1,
+        label_change: 1,
         data: [],
         loading: false,
         index: "",
@@ -104,7 +106,6 @@
     },
     mounted() {
       this.index = this.active_index;
-      // this.getData("");
     },
     methods: {
       ...mapMutations({
@@ -128,8 +129,26 @@
         this.entity = entity;
       },
       handler(value) {
-        console.log(value, "72")
+        if(value == 1) {
+          this.getData("")
+        }
+        this.change2 = value;
         this.change = value;
+      },
+      setChange(value) {
+          this.label_change = this.change;
+      },
+      setLabel(value) {
+        console.log("139", value, this.change, this.label_change)
+        if(value == 1) {
+          this.change = value;
+        } else {
+            if(this.label_change == 1) {
+              this.getData("");
+            } else {
+              this.change = 2;
+            }
+         }
       },
       setData(v) {
         this.data = [];
@@ -143,12 +162,13 @@
         this.index = index;
         openFileRecentlyApi(this.$axios, this.EDIT, args);
       },
-      getData(fileName) {
+      getData(fileName = "") {
+
         // this.change2 = 2;
         let loadTimer = setTimeout(() => {
           this.loading = true;
         }, 50);
-        getOpenFileRecentlyApi(this.$axios, this.EDIT, {user_id: getToken(), file_name: fileName}).then(res => {
+        getOpenFileRecentlyApi(this.$axios, this.EDIT, {user_id: getToken2('user').id , file_name: fileName}).then(res => {
           this.data = res.data.data;
           if (this.data.length)
             this.setActiveIndex('/home' + this.data[0].path);
@@ -158,7 +178,23 @@
           this.loading = false;
           clearTimeout(loadTimer);
         });
-
+      },
+      getData2(fileName = "") {
+      this.data = {}
+      this.setLabel(1);
+        let loadTimer = setTimeout(() => {
+          this.loading = true;
+        }, 50);
+        getOpenFileApi(this.$axios, this.EDIT, {user_id: getToken2('user').id, file_name: fileName}).then(res => {
+          this.data = res.data.data;
+          if (this.data.length)
+            this.setActiveIndex('/home' + this.data[0].path);
+          clearTimeout(loadTimer);
+          this.loading = false;
+        }).catch(err => {
+          this.loading = false;
+          clearTimeout(loadTimer);
+        });
       }
     }
   }

@@ -10,7 +10,7 @@
 
   export default {
     name: "Edit",
-    props: ['sheet_id'],
+    props: ['sheet_id', 'sheet_id2'],
     data() {
       return {
         refresh: false,
@@ -92,12 +92,17 @@
             state: !0,
             width: 240
           };
+            options.view = {
+          height: () => 150 * 25,
+        };
           options.col = {
             len: neat_flex["col"],
           };
         }
-        options.view = {
-          height: () => 150 * 25,
+   options.view = {
+          width:() => {
+            return document.body.clientWidth - 280 - 10 - 68;
+          }
         };
         return options;
       },
@@ -166,13 +171,14 @@
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
                 self.refresh = true
-                console.log(data, "52")
+                console.log(data,self.sheet_id2, "52")
                 self.$axios.post(self.EDIT + "/edit_save", {
                   data: JSON.stringify(data.rows),
                   trade_code: self.trade_code,
                   styles: JSON.stringify(data.styles),
                   options: JSON.stringify(self.options),
-                  id: self.sheet_id
+                  id: self.sheet_id,
+                  id2: self.sheet_id2
                 }).then(res => {
                   self.$emit("loadCatalogueData");
                 })

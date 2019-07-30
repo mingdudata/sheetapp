@@ -2,7 +2,7 @@
   <div class="navMenu">
     <template v-for="navMenu in navMenus">
       <!-- 最后一级菜单 -->
-      <el-menu-item style="padding-left: 28px" v-if="!navMenu.childs&&navMenu.entity && navMenu.entity.alias != 'hide'"
+      <el-menu-item style="display: block;" v-if="!navMenu.childs&&navMenu.entity && navMenu.entity.alias != 'hide'"
                       :key="navMenu.entity.id" :data="navMenu" :index="'/home' + navMenu.entity.path + ''">
         <div @contextmenu.prevent="rightShow(navMenu.entity)">
           <i :class="navMenu.entity.icon"></i>

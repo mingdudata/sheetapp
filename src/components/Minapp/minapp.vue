@@ -17,7 +17,7 @@
 
 <script>
   import Views from '../Minapp/views'
-  import {getToken} from "../../utils/auth";
+  import {getToken, getToken2} from "../../utils/auth";
   import {loginUrl} from "../config";
 
   export default {
@@ -32,11 +32,13 @@
     methods: {
       openiframe(src) {
         console.log("33",  src)
-        if(src.indexOf(loginUrl)) {
+        if(src.indexOf("192.168.31.9:8023")) {
           const iframe = document.getElementById('myIframe').contentWindow;
+          console.log(getToken2('user').name == "" || !(getToken2('user').name)
+           ? getToken2('user').nickname : getToken2('user').name, "38", getToken2('user').nickname)
           iframe.postMessage(JSON.stringify({
-            "id": getToken()
-          }), loginUrl);
+            "id": getToken2('user').name == "" || !getToken2('user').name   ? getToken2('user').nickname : getToken2('user').name
+          }), "http://192.168.31.9:8023");
         }
         this.asrc = src;
       }

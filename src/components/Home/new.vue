@@ -98,8 +98,8 @@
             this.addRootDirectory();
             this.filterNavMenus(res.data.data);
             this.talkParent();
-            this.loading = false;
           }
+           this.loading = false;
         }).catch(error => {
           this.loading = false;
         })

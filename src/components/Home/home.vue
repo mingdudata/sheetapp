@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%; width: 100%;" id="home">
-    <el-row style="height: 100%; ">
+    <el-row :style="style">
       <el-col style="height: 100%; width: 68px; " :span="1">
         <Aside @changeType="changeType"/>
       </el-col>
@@ -24,7 +24,22 @@
   export default {
     name: "home",
     mounted() {
+    this.style.width = document.body.clientWidth + "px";
+    this.my_style.width = document.body.clientWidth - 68 + "px";
       console.log(document.body.clientWidth);
+      window.onresize = () => {
+          console.log("...")
+          window.screenWidth = document.body.clientWidth;
+          this.screenWidth =  window.screenWidth;
+      }
+    },
+    watch: {
+      screenWidth(val) {
+        console.log(39)
+        this.screenWidth = val;
+        this.style.width = val + "px";
+        this.my_style.width = val - 68 + "px";
+      }
     },
     components: {
       Content,
@@ -39,8 +54,13 @@
     },
     data() {
       return {
+      style: {
+         height: '100%',
+         width:  0 + "px",
+      },
+      screenWidth: document.body.clientWidth,
         my_style: {
-          // width: '0px',
+          width: document.body.clientWidth,
           height: '100%',
           position: 'absolute',
           left: '68px'

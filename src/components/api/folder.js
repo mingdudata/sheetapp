@@ -15,6 +15,16 @@ export function getOpenFileRecentlyApi(axios, EDIT, data) {
   });
 }
 
+export function getOpenFileApi(axios, EDIT, data) {
+  const {user_id, file_name} = data;
+  return axios.post(EDIT + "/openFile_get", {
+    user_id: user_id,
+    file_name: file_name
+  });
+}
+
+
+
 export function changeFileNameApi(axios, EDIT, data) {
   const {_id, name} = data;
   return axios.post(EDIT + "/edit_catalogue/rename", {
