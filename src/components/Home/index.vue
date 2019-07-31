@@ -338,7 +338,7 @@
           console.log("item", item.sheet)
           this.$axios.get(this.EDIT + "/edit_find", {
             params: {
-              id: item.sheet.id
+              id: item.sheet.id,
             }
           }).then(response => {
             item.sheet.data = JSON.parse(response.data.sheet_details)
