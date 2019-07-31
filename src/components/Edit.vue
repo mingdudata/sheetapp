@@ -10,7 +10,7 @@
 
   export default {
     name: "Edit",
-    props: ['sheet_id', 'sheet_id2'],
+    props: ['sheet_id', 'id2'],
     data() {
       return {
         refresh: false,
@@ -171,14 +171,14 @@
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
                 self.refresh = true
-                console.log(data,self.sheet_id2, "52")
+                console.log(data,self.id2, "52")
                 self.$axios.post(self.EDIT + "/edit_save", {
                   data: JSON.stringify(data.rows),
                   trade_code: self.trade_code,
                   styles: JSON.stringify(data.styles),
                   options: JSON.stringify(self.options),
                   id: self.sheet_id,
-                  id2: self.sheet_id2
+                  id2: self.id2
                 }).then(res => {
                   self.$emit("loadCatalogueData");
                 })

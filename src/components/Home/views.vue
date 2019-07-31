@@ -113,6 +113,12 @@
       }),
       changeFileName() {
         changeFileNameApi(this.$axios, this.EDIT, {_id: this.entity.id, name: this.input}).then(res => {
+        console.log("116", res.data)
+        if(res.data == "fail") {
+              this.$message({message: '修改名称失败', type: 'error', showClose: true});
+               this.centerDialogVisible = false;
+              return;
+        }
           console.log("..")
           this.$message({message: '修改名称成功', type: 'success', showClose: true});
           this.centerDialogVisible = false;

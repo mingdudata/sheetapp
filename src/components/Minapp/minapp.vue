@@ -26,19 +26,20 @@
     },
     data() {
       return {
-        asrc: "http://180.169.75.199:5007/s/"
+        asrc: "http://180.169.75.199:5007/s/",
       }
     },
     methods: {
       openiframe(src) {
         console.log("33",  src)
+          let iframe = document.getElementById('myIframe').contentWindow;
         if(src.indexOf("192.168.31.9:8023")) {
-          const iframe = document.getElementById('myIframe').contentWindow;
           console.log(getToken2('user').name == "" || !(getToken2('user').name)
-           ? getToken2('user').nickname : getToken2('user').name, "38", getToken2('user').nickname)
-          iframe.postMessage(JSON.stringify({
-            "id": getToken2('user').name == "" || !getToken2('user').name   ? getToken2('user').nickname : getToken2('user').name
-          }), "http://192.168.31.9:8023");
+             ? getToken2('user').nickname : getToken2('user').name, "38", getToken2('user').nickname)
+            iframe.postMessage(JSON.stringify({
+              "id": getToken2('user').name == "" || !getToken2('user').name   ? getToken2('user').nickname : getToken2('user').name
+            }), "http://192.168.31.9:8023");
+
         }
         this.asrc = src;
       }

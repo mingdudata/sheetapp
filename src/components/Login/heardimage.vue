@@ -28,14 +28,13 @@
         circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
         squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
         sizeList: ["small"],
-        username: getToken(),
+        username: getToken2('user').nickname ? getToken2('user').nickname : getToken2('user').username,
       }
     },
     mounted() {
       let user = getToken2("user");
-
       if (user) {
-        this.squareUrl = user.headimgurl ? user.headimgurl : "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+        this.squareUrl = user.headimage ? user.headimage :  user.headimgurl ?  user.headimgurl : "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
       }
     },
     methods: {

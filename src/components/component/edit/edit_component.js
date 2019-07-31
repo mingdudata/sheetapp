@@ -10,7 +10,7 @@ let edit = (self, {path, id, id2}) => {
       data: function () {
         return {
           id: id,
-          id2: id2,
+          id2: id,
           style: {
             height: document.documentElement.clientHeight + "px"
           }
@@ -22,7 +22,7 @@ let edit = (self, {path, id, id2}) => {
         }
       },
       components: {Edit},
-      template: ' <Edit :sheet_id="id" :sheet_id2="id2"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
+      template: ' <Edit :sheet_id="id" :id2="id2"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
     }),
   };
   return args;

@@ -1,6 +1,24 @@
 <template>
   <div style=" background: #FBFBFB">
-    <div >
+    <div v-if="type == 1" >
+     <el-menu :default-active="index" router active-text-color="rgb(14, 170, 16)" class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
+      <div v-for="(item, index) in data">
+        <el-menu-item :index="'/home' + item.path">
+          <div @contextmenu.prevent="rightShow(item)">
+            <i class="el-icon-document"></i>
+            <span slot="title"
+                  style="width: 60%; overflow: hidden; text-overflow:ellipsis; white-space: nowrap; display: inline-block">{{item.alias }} </span>
+            <div style="display: inline-block; position: absolute; right: 20px ; ">
+            <span style="position: relative; top: 1px; font-size: 12px; color: rgb(169, 169, 169);  ">
+              {{item.sheet_date}}
+          </span>
+            </div>
+          </div>
+        </el-menu-item>
+      </div>
+    </el-menu>
+    </div>
+     <div v-else :id="type + 'sss'" >
      <el-menu :default-active="index" router active-text-color="rgb(14, 170, 16)" class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
       <div v-for="(item, index) in data">
         <el-menu-item :index="'/home' + item.path">
@@ -35,6 +53,7 @@
       }),
       rightShow(entity) {
         console.log("34", entity)
+
         this.setEntity(entity);
       },
       handleOpen(key, keyPath) {
@@ -77,7 +96,8 @@
     },
     watch: {
       data() {
-
+      this.type = this.type == "1" ? 2 : "1"
+      console.log("80")
       },
       $route(to, from) {
         this.setActiveIndex(to.path);

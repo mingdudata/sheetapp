@@ -91,9 +91,10 @@
             if (res.data.sheet) {
               let entity = dirBuilder(res.data.sheet);
               let routerMap = [];
-              constantRouterMap[1].children.push(edit(this.self, {path: p + entity.path + "", id:  entity.id}));
+              constantRouterMap[1].children.push(edit(this.self, {path: p + entity.path + "", id:  entity.sheet_id, id2: entity.sheet_id2}));
               routerMap.push(constantRouterMap[1])
               this.$router.addRoutes(routerMap);
+              this.$router.push({path: p + entity.path + ""})
             }
             this.addRootDirectory();
             this.filterNavMenus(res.data.data);
