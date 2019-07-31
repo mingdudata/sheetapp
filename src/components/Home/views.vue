@@ -112,6 +112,13 @@
         setActiveIndex: "SET_ACTIVE_INDEX",
       }),
       changeFileName() {
+        if(this.input == "") {
+          this.$message({
+            message: '文件名不能为空',
+            type: 'warning'
+          });
+          return;
+        }
         changeFileNameApi(this.$axios, this.EDIT, {_id: this.entity.id, name: this.input}).then(res => {
         console.log("116", res.data)
         if(res.data == "fail") {
