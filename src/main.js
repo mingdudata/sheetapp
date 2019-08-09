@@ -19,12 +19,12 @@ Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
-Vue.prototype.EDIT = 'http://192.168.31.9:5017/edit'
+Vue.prototype.EDIT = 'http://192.168.31.33:5010/edit'
 Vue.prototype.$axios = axios;
 Vue.use(Element)
 
 router.beforeEach((to, from, next) => {
-  if (getToken() || getToken2("user")) {
+  if (getToken2("user")) {
     if (to.path == '/weixincallback') {
       next('/home')
     } else if (to.path == '/login') {

@@ -18,11 +18,12 @@
       </div>
 
       <div>
-        <search @setLabel="setLabel"  @setChange="setChange" @getData2="getData2" @opensearchpane="handler" @getData="getData" @setData="setData"/>
+        <search @setLabel="setLabel" @setChange="setChange" @getData2="getData2" @opensearchpane="handler"
+                @getData="getData" @setData="setData"/>
       </div>
     </div>
 
-    <div style="min-height: 100px"  element-loading-spinner="el-icon-loading">
+    <div style="min-height: 100px" element-loading-spinner="el-icon-loading">
       <div v-show="change == 1">
         <div v-contextmenu:contextmenu>
           <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
@@ -33,7 +34,8 @@
       </div>
       <div v-show="change == 2">
         <div v-contextmenu:contextmenu>
-          <el-menu  background-color="#FBFBFB"  active-text-color="rgb(14, 170, 16)" router :default-active="index" @select="open">
+          <el-menu background-color="#FBFBFB" active-text-color="rgb(14, 170, 16)" router :default-active="index"
+                   @select="open">
             <nav-menu :navMenus="menuData"/>
           </el-menu>
           <v-contextmenu ref="contextmenu">
@@ -62,8 +64,8 @@
   import RecentlyOpen from "./RecentlyOpen"
   import Search from './search'
   import SearchOpen from './SearchOpen'
-  import {changeFileNameApi, getOpenFileRecentlyApi, openFileRecentlyApi, getOpenFileApi} from "../api/folder";
-  import {getToken, getToken2} from "../../utils/auth";
+  import {changeFileNameApi, getOpenFileApi, getOpenFileRecentlyApi, openFileRecentlyApi} from "../api/folder";
+  import {getToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
 
   export default {
@@ -142,26 +144,26 @@
         this.entity = entity;
       },
       handler(value) {
-        if(value == 1) {
+        if (value == 1) {
           this.getData("")
         }
         this.change2 = value;
         this.change = value;
       },
       setChange(value) {
-          this.label_change = this.change;
+        this.label_change = this.change;
       },
       setLabel(value) {
         console.log("139", value, this.change, this.label_change)
-        if(value == 1) {
+        if (value == 1) {
           this.change = value;
         } else {
-            if(this.label_change == 1) {
-              this.getData("");
-            } else {
-              this.change = 2;
-            }
-         }
+          if (this.label_change == 1) {
+            this.getData("");
+          } else {
+            this.change = 2;
+          }
+        }
       },
       setData(v) {
         this.data = [];
@@ -181,7 +183,10 @@
         let loadTimer = setTimeout(() => {
           this.loading = true;
         }, 50);
-        getOpenFileRecentlyApi(this.$axios, this.EDIT, {user_id: getToken2('user').id , file_name: fileName}).then(res => {
+        getOpenFileRecentlyApi(this.$axios, this.EDIT, {
+          user_id: getToken2('user').id,
+          file_name: fileName
+        }).then(res => {
           this.data = res.data.data;
           if (this.data.length)
             this.setActiveIndex('/home' + this.data[0].path);
@@ -193,8 +198,8 @@
         });
       },
       getData2(fileName = "") {
-      this.data = {}
-      this.setLabel(1);
+        this.data = {}
+        this.setLabel(1);
         let loadTimer = setTimeout(() => {
           this.loading = true;
         }, 50);

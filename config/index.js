@@ -19,7 +19,7 @@ module.exports = {
         }
       },
       "/edit": {
-        target: "http://192.168.31.9:5017", // sheetapp
+        target: "http://192.168.31.33:5010", // sheetapp
         changeOrigin: true,
         pathRewrite: {
           "^/edit": ''
@@ -28,7 +28,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: '192.168.31.9', // can be overwritten by process.env.HOST
+    host: '192.168.31.33', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

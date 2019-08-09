@@ -11,7 +11,7 @@
  Target Server Version : 50718
  File Encoding         : 65001
 
- Date: 30/07/2019 11:47:23
+ Date: 31/07/2019 13:20:28
 */
 
 SET NAMES utf8mb4;
@@ -74,7 +74,7 @@ CREATE TABLE `catalogue` (
   `type` int(11) DEFAULT '1' COMMENT '为1是文件，为2是文件夹',
   `date` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of catalogue
@@ -91,6 +91,14 @@ INSERT INTO `catalogue` VALUES (85, NULL, 'el-icon-document', 'fffff', NULL, 1, 
 INSERT INTO `catalogue` VALUES (86, NULL, 'el-icon-document', 'zx', NULL, 1, NULL, '/tt/zx', '/tt', 91, 1, NULL);
 INSERT INTO `catalogue` VALUES (87, NULL, 'el-icon-document', 'asdasd', NULL, 1, NULL, '/tt/asdasd', '/tt', 92, 1, NULL);
 INSERT INTO `catalogue` VALUES (88, NULL, 'el-icon-document', 'zxczxc', NULL, 1, NULL, '/tt/zxczxc', '/tt', 93, 1, NULL);
+INSERT INTO `catalogue` VALUES (89, NULL, 'el-icon-folder', 'asdas', NULL, 4, NULL, '/0aa1ea9a5a04b78d4581dd6d17742627', '/', 94, 2, NULL);
+INSERT INTO `catalogue` VALUES (90, NULL, 'el-icon-folder', 'hide', NULL, 4, NULL, '/0aa1ea9a5a04b78d4581dd6d17742627/a88f05b6c963e145a45b58c47cd42a41', '/0aa1ea9a5a04b78d4581dd6d17742627', 94, 2, NULL);
+INSERT INTO `catalogue` VALUES (91, NULL, 'el-icon-document', 'ssss', NULL, 4, NULL, '/8f60c8102d29fcd525162d02eed4566b', '/', 95, 1, NULL);
+INSERT INTO `catalogue` VALUES (92, NULL, 'el-icon-document', 'vv', NULL, 11, NULL, '/c4055e3a20b6b3af3d10590ea446ef6c', '/', 96, 1, NULL);
+INSERT INTO `catalogue` VALUES (93, NULL, 'el-icon-document', '从cc', NULL, 11, NULL, '/26a7d8bc753b94c9e1f097812cb24d66', '/', 97, 1, NULL);
+INSERT INTO `catalogue` VALUES (94, NULL, 'el-icon-document', 'zxz', NULL, 1, NULL, '/tt/0666d3bb926ccae05deb6307995a9a84', '/tt', 98, 1, NULL);
+INSERT INTO `catalogue` VALUES (95, NULL, 'el-icon-document', 'zxzx', NULL, 1, NULL, '/tt/24b4511b36ae35c1f232602c9694c065', '/tt', 99, 1, NULL);
+INSERT INTO `catalogue` VALUES (96, NULL, 'el-icon-document', 'xxxaa', NULL, 4, NULL, '/0aa1ea9a5a04b78d4581dd6d17742627/4124bc0a9335c27f086f24ba207a4912', '/0aa1ea9a5a04b78d4581dd6d17742627', 100, 1, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -486,21 +494,23 @@ CREATE TABLE `recently_file` (
   `date` varchar(1024) NOT NULL,
   `user_id` int(124) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of recently_file
 -- ----------------------------
 BEGIN;
-INSERT INTO `recently_file` VALUES (44, '/home/tt/xx', '2019-07-30 11:27:10', 123456);
-INSERT INTO `recently_file` VALUES (45, '/home/tt/dd', '2019-07-30 11:27:23', 123456);
-INSERT INTO `recently_file` VALUES (46, '/home/tt/00', '2019-07-30 11:27:00', 123456);
-INSERT INTO `recently_file` VALUES (47, '/home/tt/111', '2019-07-30 11:27:02', 123456);
-INSERT INTO `recently_file` VALUES (48, '/home/tt/xxzz', '2019-07-30 11:27:03', 123456);
-INSERT INTO `recently_file` VALUES (49, '/home/tt/fffff', '2019-07-26 20:45:28', 123456);
-INSERT INTO `recently_file` VALUES (50, '/home/tt/zx', '2019-07-30 11:27:03', 123456);
-INSERT INTO `recently_file` VALUES (51, '/home/tt/asdasd', '2019-07-30 11:27:04', 123456);
-INSERT INTO `recently_file` VALUES (52, '/home/tt/zxczxc', '2019-07-30 11:27:04', 123456);
+INSERT INTO `recently_file` VALUES (54, '/home/tt/00', '2019-07-30 12:37:12', 1);
+INSERT INTO `recently_file` VALUES (55, '/home/tt/111', '2019-07-30 12:33:10', 1);
+INSERT INTO `recently_file` VALUES (56, '/home/tt/xxzz', '2019-07-30 12:37:09', 1);
+INSERT INTO `recently_file` VALUES (57, '/home/tt/fffff', '2019-07-30 12:33:27', 1);
+INSERT INTO `recently_file` VALUES (58, '/home/tt/0666d3bb926ccae05deb6307995a9a84', '2019-07-30 12:37:06', 1);
+INSERT INTO `recently_file` VALUES (59, '/home/tt/24b4511b36ae35c1f232602c9694c065', '2019-07-30 12:37:10', 1);
+INSERT INTO `recently_file` VALUES (60, '/home/tt/asdasd', '2019-07-30 12:37:08', 1);
+INSERT INTO `recently_file` VALUES (61, '/home/tt/xx', '2019-07-30 12:37:13', 1);
+INSERT INTO `recently_file` VALUES (62, '/home/tt/dd', '2019-07-30 12:37:14', 1);
+INSERT INTO `recently_file` VALUES (63, '/home/8f60c8102d29fcd525162d02eed4566b', '2019-07-31 09:51:21', 4);
+INSERT INTO `recently_file` VALUES (64, '/home/0aa1ea9a5a04b78d4581dd6d17742627/4124bc0a9335c27f086f24ba207a4912', '2019-07-31 09:51:52', 4);
 COMMIT;
 
 -- ----------------------------
@@ -515,7 +525,7 @@ CREATE TABLE `sheet` (
   `sheet_name` varchar(1024) NOT NULL,
   `sheet_path` varchar(500) NOT NULL COMMENT '映射到本地下的一个目录',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sheet
@@ -528,10 +538,17 @@ INSERT INTO `sheet` VALUES (86, '2019-07-26 20:34:27', 1, '', 'xx', 'tmp27796079
 INSERT INTO `sheet` VALUES (87, '2019-07-26 20:34:04', 1, '', '00', 'tmp526794659.json');
 INSERT INTO `sheet` VALUES (88, '2019-07-26 20:41:15', 1, '', '111', 'tmp708376244.json');
 INSERT INTO `sheet` VALUES (89, '2019-07-26 20:45:17', 1, '', 'xxzz', 'tmp320080686.json');
-INSERT INTO `sheet` VALUES (90, '2019-07-26 20:44:47', 1, '', 'fffff', 'tmp804478357.json');
+INSERT INTO `sheet` VALUES (90, '2019-07-30 12:33:23', 1, '', 'fffff', 'tmp804478357.json');
 INSERT INTO `sheet` VALUES (91, '2019-07-26 20:45:42', 1, '', 'zx', 'tmp72742409.json');
 INSERT INTO `sheet` VALUES (92, '2019-07-26 20:46:57', 1, '', 'asdasd', 'tmp95579021.json');
 INSERT INTO `sheet` VALUES (93, '2019-07-26 20:49:57', 1, '', 'zxczxc', 'tmp68956240.json');
+INSERT INTO `sheet` VALUES (94, '2019-07-30 12:33:44', 1, '', 'asdas', 'tmp279912879.json');
+INSERT INTO `sheet` VALUES (95, '2019-07-30 12:36:58', 1, '', 'ssss', 'tmp202302674.json');
+INSERT INTO `sheet` VALUES (96, '2019-07-30 12:37:40', 1, '', 'vv', 'tmp624351262.json');
+INSERT INTO `sheet` VALUES (97, '2019-07-30 11:58:05', 1, '', '从cc', 'tmp2651695.json');
+INSERT INTO `sheet` VALUES (98, '2019-07-30 12:33:40', 1, '', 'zxz', 'tmp36607333.json');
+INSERT INTO `sheet` VALUES (99, '2019-07-30 12:36:53', 1, '', 'zxzx', 'tmp857007619.json');
+INSERT INTO `sheet` VALUES (100, '2019-07-30 14:13:54', 1, '', 'aa', 'tmp159193983.json');
 COMMIT;
 
 -- ----------------------------
@@ -543,7 +560,7 @@ CREATE TABLE `user_app` (
   `user_id` int(11) NOT NULL,
   `app_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_app
@@ -556,6 +573,7 @@ INSERT INTO `user_app` VALUES (6, 12, 1);
 INSERT INTO `user_app` VALUES (7, 1, 2);
 INSERT INTO `user_app` VALUES (8, 1, 1);
 INSERT INTO `user_app` VALUES (9, 1, 3);
+INSERT INTO `user_app` VALUES (10, 4, 3);
 COMMIT;
 
 -- ----------------------------
@@ -579,7 +597,7 @@ CREATE TABLE `weixin_user` (
 -- ----------------------------
 BEGIN;
 INSERT INTO `weixin_user` VALUES (11, 'o8FUd6INgyPD8oTQkmKWjojBYFsA', 'trait', 1, 'Yangzhou', 'Jiangsu', 'http://thirdwx.qlogo.cn/mmopen/vi_32/QD6bf8hkS5cH9oAdVNOXnLTOce6lCTlInPwOh6bN8gZngo1gAwQYy6yyibU8QPWyriaBhX4Q12vxaOA0WwOw5ZhQ/132', 'oBrBh1a3lo_zBPzifcx7VwhxS5F8');
-INSERT INTO `weixin_user` VALUES (12, 'o8FUd6KKS5x6VJeyXerMZ1ODK2fk', 'å¯æ­¤', 1, 'Baoshan', 'Shanghai', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erRsvrHQDtIzxDIOYeoCy7yicG19LRHiaov1BG0z0S28s7U5iaIEgbSYhFdGK1gRcp6H3UhibNicEXmEuw/132', 'oBrBh1aPhVxArHELufoMpz9CqCDY');
+INSERT INTO `weixin_user` VALUES (12, 'o8FUd6KKS5x6VJeyXerMZ1ODK2fk', '唯此', 1, 'Baoshan', 'Shanghai', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erRsvrHQDtIzxDIOYeoCy7yicG19LRHiaov1BG0z0S28s7U5iaIEgbSYhFdGK1gRcp6H3UhibNicEXmEuw/132', 'oBrBh1aPhVxArHELufoMpz9CqCDY');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
