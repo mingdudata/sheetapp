@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="sheetapp">
     <div id="x-spreadsheet-demo"></div>
   </div>
 </template>
@@ -92,18 +92,19 @@
             state: !0,
             width: 240
           };
-            options.view = {
-          height: () => 150 * 25,
-        };
+          options.view = {
+            height: () => 150 * 25,
+          };
           options.col = {
             len: neat_flex["col"],
           };
         }
-   options.view = {
-          width:() => {
+        options.view = {
+          width: () => {
             return document.body.clientWidth - 280 - 10 - 68;
           }
         };
+        options.showFreeze = true;
         return options;
       },
       reqTableData() {
@@ -115,11 +116,10 @@
             this.data = typeof response.data.sheet_details == 'string'
               ? JSON.parse(response.data.sheet_details) : response.data.sheet_details;
 
-            console.log(response, 78)
-            // this.options = typeof response.data.sheet_options == 'string'
-            //   ? JSON.parse(response.data.sheet_options) : response.data.sheet_options;
-            if (JSON.stringify(response.data.sheet_styles) == "{}") {
+            if (typeof response.data.sheet_styles === "string" && JSON.parse(response.data.sheet_styles) == []) {
               this.styles = styles;
+            } else {
+              this.styles = response.data.sheet_styles
             }
             this.options.formula = {
               id: this.sheet_id,
@@ -127,11 +127,13 @@
               data: this.data,
               diff: this.diff,
               timer: null,
+              timer2: null,
               styles: styles,
               wland(formula, data, table) {
                 clearTimeout(formula.timer);
+                clearTimeout(formula.timer2);
                 formula.timer = setTimeout(() => {
-                  formula.axios.post("http://192.168.31.9:5017/edit/edit_find", {
+                  formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
                     id: formula.id,
                     date: Date.now()
                   }).then(res => {
@@ -149,15 +151,64 @@
                     }
                   })
                 }, 500);
+
+                formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                  id: formula.id,
+                  date: Date.now()
+                }).then(res => {
+                  console.log(res.data.enter)
+                  if (res.data.enter == "rtd") {
+                    let args = {};
+                    if (JSON.stringify(res.data.sheet_styles) == "{}") {
+                      args['styles'] = formula.styles;
+                    }
+
+                    args['rows'] = typeof res.data.sheet_details == 'string'
+                      ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
+                    args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
+                    data.setData(args);
+                    table.render();
+                  } else {
+                    clearInterval(formula.timer2);
+                  }
+                });
+
+                formula.timer2 = setInterval(() => {
+                  formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                    id: formula.id,
+                    date: Date.now()
+                  }).then(res => {
+                    console.log(res.data.enter)
+                    if (res.data.enter == "rtd") {
+                      let args = {};
+                      if (JSON.stringify(res.data.sheet_styles) == "{}") {
+                        args['styles'] = formula.styles;
+                      }
+
+                      args['rows'] = typeof res.data.sheet_details == 'string'
+                        ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
+                      args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
+                      data.setData(args);
+                      table.render();
+                    } else {
+                      clearInterval(formula.timer2);
+                    }
+                  })
+                }, 3000);
               }
             };
             this.options = this.loadRowAndCol(this.options, response.data.neat_flex);
             // this.options = wlandOption;
-            var d1 = document.getElementById(('x-spreadsheet-demo'));
-            var d2 = document.getElementsByClassName('x-spreadsheet')[0];
-            if (d1 !== undefined && d2 !== undefined) {
-              d1.removeChild(d2);
-            }
+          // var d1 = document.getElementById(('x-spreadsheet-demo'));
+          var d1 = document.getElementById('sheetapp');
+            // var d2 = document.getElementsByClassName('x-spreadsheet')[0];
+            // if (d1 !== undefined && d2 !== undefined) {
+            //   d1.removeChild(d2);
+            // }
+          d1.removeChild(d1.firstChild);
+          var d2 = document.createElement("div");
+          d2.setAttribute("id", "x-spreadsheet-demo");
+          d1.appendChild(d2);
 
             let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
             xs.loadData(
@@ -171,11 +222,11 @@
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
                 self.refresh = true
-                console.log(data,self.id2, "52")
+                console.log(data, self.id2, "52")
                 self.$axios.post(self.EDIT + "/edit_save", {
                   data: JSON.stringify(data.rows),
                   trade_code: self.trade_code,
-                  styles: JSON.stringify(data.styles),
+                  styles: data.styles,
                   options: JSON.stringify(self.options),
                   id: self.sheet_id,
                   id2: self.id2

@@ -58,6 +58,7 @@ export var styles = [{
 }];
 
 export const defaultOptions = {
+  showFreeze: true,
   formula: {
     wland() {
 

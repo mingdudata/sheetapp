@@ -96,9 +96,7 @@
       }
     },
     mounted() {
-      document.body.onselectstart = function () {
-        return false;
-      };
+
       this.loadCataloguePromise().then(res => {
         this.setMenuData(res.data);
         this.showNewCompent = true
@@ -144,13 +142,11 @@
         if (exist == false) {
           redirect_str = "/home"
         }
-        console.log("138")
         redirect_str = decodeURIComponent(redirect_str || '/');
         this.$router.push({path: redirect_str})
       },
       menuhover(pm) {
         this.contextC = pm.target;
-        console.log("...", this.active_index)
       },
       redirect(redirect_str) {
         this.$router.push({path: redirect_str})
@@ -320,7 +316,7 @@
             message: '您还没有登录哦~',
             type: 'error'
           });
-          this.removeToken2('user');
+          removeToken2('user');
           this.$router.push({path: '/login'})
           return;
         }
