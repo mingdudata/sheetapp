@@ -30,7 +30,7 @@
 
 <script>
   import {defaultOptions} from "../styles";
-  import {getToken2, removeToken2} from "../../utils/auth";
+  import {getToken2} from "../../utils/auth";
   import {dirBuilder} from "../core/builder";
   import {constantRouterMap} from "../../router";
   import {edit, p} from "../component/edit/edit_component";
@@ -91,7 +91,11 @@
             if (res.data.sheet) {
               let entity = dirBuilder(res.data.sheet);
               let routerMap = [];
-              constantRouterMap[1].children.push(edit(this.self, {path: p + entity.path + "", id:  entity.sheet_id, id2: entity.sheet_id2}));
+              constantRouterMap[1].children.push(edit(this.self, {
+                path: p + entity.path + "",
+                id: entity.sheet_id,
+                id2: entity.sheet_id2
+              }));
               routerMap.push(constantRouterMap[1])
               this.$router.addRoutes(routerMap);
               this.$router.push({path: p + entity.path + ""})
@@ -100,7 +104,7 @@
             this.filterNavMenus(res.data.data);
             this.talkParent();
           }
-           this.loading = false;
+          this.loading = false;
         }).catch(error => {
           this.loading = false;
         })
@@ -120,8 +124,11 @@
     },
     watch: {
       dialogFormVisible(o_v, n_v) {
-        this.copyDialogFormVisible = this.dialogFormVisible
-        console.log(41, this.folder)
+        this.copyDialogFormVisible = this.dialogFormVisible;
+        this.addRootDirectory();
+        this.filterNavMenus(this.navMenus);
+        this.form.folder = "";
+        console.log(41, this.form.folder, this.navMenus)
       },
       copyDialogFormVisible(o_v, n_v) {
         if (n_v == true) {

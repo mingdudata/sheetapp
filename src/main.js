@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 // import 'element-ui/lib/theme-chalk/index.css'
-import mainVue from 'vue'
+import Vue from 'vue'
 import App from './App'
 import router, {constantRouterMap} from './router'
 import axios from 'axios'
@@ -19,7 +19,7 @@ Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
-Vue.prototype.EDIT = 'http://192.168.31.33:5010/edit'
+Vue.prototype.EDIT = 'http://180.169.75.199:5004/edit';
 Vue.prototype.$axios = axios;
 Vue.use(Element)
 

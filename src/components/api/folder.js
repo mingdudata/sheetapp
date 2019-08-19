@@ -23,6 +23,17 @@ export function getOpenFileApi(axios, EDIT, data) {
   });
 }
 
+export function removeFileApi(axios, EDIT, data) {
+  const {_id, file_id, user_id, type, path} = data;
+  return axios.post(EDIT + "/remove_file", {
+    id: _id,
+    file_id: file_id,
+    user_id: user_id,
+    path: path,
+    type: type
+  });
+}
+
 
 
 export function changeFileNameApi(axios, EDIT, data) {

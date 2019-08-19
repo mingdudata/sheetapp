@@ -12,14 +12,14 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       "/api": {
-        target: "http://192.168.31.9:5009",
+        target: "http://180.169.75.199:5004",
         changeOrigin: true,
         pathRewrite: {
           "^/api": ''
         }
       },
       "/edit": {
-        target: "http://192.168.31.33:5010", // sheetapp
+        target: "http://180.169.75.199:5004", // sheetapp
         changeOrigin: true,
         pathRewrite: {
           "^/edit": ''

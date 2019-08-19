@@ -29,6 +29,7 @@
           <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
           <v-contextmenu ref="contextmenu">
             <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
+            <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
           </v-contextmenu>
         </div>
       </div>
@@ -40,6 +41,7 @@
           </el-menu>
           <v-contextmenu ref="contextmenu">
             <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
+            <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
           </v-contextmenu>
         </div>
       </div>
@@ -64,7 +66,13 @@
   import RecentlyOpen from "./RecentlyOpen"
   import Search from './search'
   import SearchOpen from './SearchOpen'
-  import {changeFileNameApi, getOpenFileApi, getOpenFileRecentlyApi, openFileRecentlyApi} from "../api/folder";
+  import {
+    changeFileNameApi,
+    getOpenFileApi,
+    getOpenFileRecentlyApi,
+    openFileRecentlyApi,
+    removeFileApi
+  } from "../api/folder";
   import {getToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
 
@@ -114,7 +122,7 @@
         setActiveIndex: "SET_ACTIVE_INDEX",
       }),
       changeFileName() {
-        if(this.input == "") {
+        if (this.input == "") {
           this.$message({
             message: '文件名不能为空',
             type: 'warning'
@@ -122,15 +130,28 @@
           return;
         }
         changeFileNameApi(this.$axios, this.EDIT, {_id: this.entity.id, name: this.input}).then(res => {
-        console.log("116", res.data)
-        if(res.data == "fail") {
-              this.$message({message: '该文件已经存在了哦~', type: 'error', showClose: true});
-               this.centerDialogVisible = false;
-              return;
-        }
-          console.log("..")
+          console.log("116", res.data)
+          if (res.data == "fail") {
+            this.$message({message: '该文件已经存在了哦~', type: 'error', showClose: true});
+            this.centerDialogVisible = false;
+            return;
+          }
           this.$message({message: '修改名称成功', type: 'success', showClose: true});
           this.centerDialogVisible = false;
+          this.$emit("loadCatalogueData");
+        });
+      },
+      removeFile() {
+        let args = {
+          user_id: getToken2('user').id,
+          file_id: this.entity.file_id || "/home" + this.entity.path,
+          _id: this.entity.id,
+          type: this.entity.type,
+          path: this.entity.parent
+        };
+        console.log(args, "92")
+        removeFileApi(this.$axios, this.EDIT, args).then(res => {
+          this.$message({message: '删除成功', type: 'success', showClose: true});
           this.$emit("loadCatalogueData");
         });
       },

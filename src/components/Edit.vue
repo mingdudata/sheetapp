@@ -24,7 +24,6 @@
       }
     },
     mounted() {
-      console.log("27...")
       if (this.sheet_id == null || this.sheet_id == undefined) {
         this.$router.push({path: '/home'})
         return;
@@ -62,7 +61,6 @@
         return true;
       },
       parseFormulaData(data) {
-        console.log("47", data)
         Object.keys(data).forEach(i => {
           // console.log(data[i], "49");
           Object.keys(data[i]).forEach(i2 => {
@@ -133,7 +131,7 @@
                 clearTimeout(formula.timer);
                 clearTimeout(formula.timer2);
                 formula.timer = setTimeout(() => {
-                  formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                  formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
                     date: Date.now()
                   }).then(res => {
@@ -152,7 +150,7 @@
                   })
                 }, 500);
 
-                formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                   id: formula.id,
                   date: Date.now()
                 }).then(res => {
@@ -167,6 +165,7 @@
                       ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
                     args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
                     data.setData(args);
+                    debugger
                     table.render();
                   } else {
                     clearInterval(formula.timer2);
@@ -174,7 +173,7 @@
                 });
 
                 formula.timer2 = setInterval(() => {
-                  formula.axios.post("http://192.168.31.33:5010/edit/edit_find", {
+                  formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
                     date: Date.now()
                   }).then(res => {
