@@ -155,7 +155,7 @@
                   date: Date.now()
                 }).then(res => {
                   console.log(res.data.enter)
-                  if (res.data.enter == "rtd") {
+                  if (res.data.enter == "rtd" && res.data.date === res.data.date) {
                     let args = {};
                     if (JSON.stringify(res.data.sheet_styles) == "{}") {
                       args['styles'] = formula.styles;
@@ -165,7 +165,6 @@
                       ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
                     args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
                     data.setData(args);
-                    debugger
                     table.render();
                   } else {
                     clearInterval(formula.timer2);
