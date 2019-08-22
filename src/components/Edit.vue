@@ -23,6 +23,7 @@
         date: 0
       }
     },
+
     mounted() {
       if (this.sheet_id == null || this.sheet_id == undefined) {
         this.$router.push({path: '/home'})
@@ -32,6 +33,8 @@
     },
     destroyed() {
       this.date = "";
+      this.xs.removeEvent();
+      console.log(this.xs,);
     },
     methods: {
       addUrlRelPath(query) {
@@ -114,11 +117,12 @@
             this.data = typeof response.data.sheet_details == 'string'
               ? JSON.parse(response.data.sheet_details) : response.data.sheet_details;
 
-            if (typeof response.data.sheet_styles === "string" && JSON.parse(response.data.sheet_styles) == []) {
-              this.styles = styles;
+            if (typeof response.data.sheet_styles === "string" && JSON.parse(response.data.sheet_styles) ) {
+              this.styles = JSON.parse(response.data.sheet_styles);
             } else {
               this.styles = response.data.sheet_styles
             }
+            console.log(this.styles)
             this.options.formula = {
               id: this.sheet_id,
               axios: this.$axios,
@@ -133,7 +137,7 @@
                 formula.timer = setTimeout(() => {
                   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
-                    date: Date.now()
+                    date: Date.now() + parseInt(Math.random() * 9999)
                   }).then(res => {
                     if (res.data.enter == "wland" || res.data.enter == "wfr") {
                       let args = {};
@@ -148,36 +152,14 @@
                       table.render();
                     }
                   })
-                }, 500);
-
-                formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
-                  id: formula.id,
-                  date: Date.now()
-                }).then(res => {
-                  console.log(res.data.enter)
-                  if (res.data.enter == "rtd" && res.data.date === res.data.date) {
-                    let args = {};
-                    if (JSON.stringify(res.data.sheet_styles) == "{}") {
-                      args['styles'] = formula.styles;
-                    }
-
-                    args['rows'] = typeof res.data.sheet_details == 'string'
-                      ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
-                    args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
-                    data.setData(args);
-                    table.render();
-                  } else {
-                    clearInterval(formula.timer2);
-                  }
-                });
-
-                formula.timer2 = setInterval(() => {
+                }, 1000);
+                  let d = Date.now() + parseInt(Math.random() * 9999);
+                setTimeout(() => {
                   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
-                    date: Date.now()
+                    date: d
                   }).then(res => {
-                    console.log(res.data.enter)
-                    if (res.data.enter == "rtd") {
+                    if (res.data.enter == "rtd" && res.data.date === d) {
                       let args = {};
                       if (JSON.stringify(res.data.sheet_styles) == "{}") {
                         args['styles'] = formula.styles;
@@ -191,25 +173,51 @@
                     } else {
                       clearInterval(formula.timer2);
                     }
+                    d = Date.now() + parseInt(Math.random() * 9999);
+                  });
+                }, 500);
+
+                formula.timer2 = setInterval(() => {
+                  formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
+                    id: formula.id,
+                    date: d
+                  }).then(res => {
+                    console.log(res.data.enter)
+                    if (res.data.enter == "rtd" && res.data.date === d) {
+                      let args = {};
+                      if (JSON.stringify(res.data.sheet_styles) == "{}") {
+                        args['styles'] = formula.styles;
+                      }
+
+                      args['rows'] = typeof res.data.sheet_details == 'string'
+                        ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
+                      args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
+                      data.setData(args);
+                      table.render();
+                    } else {
+                      clearInterval(formula.timer2);
+                    }
+                    d = Date.now() + parseInt(Math.random() * 9999);
                   })
                 }, 3000);
               }
             };
             this.options = this.loadRowAndCol(this.options, response.data.neat_flex);
             // this.options = wlandOption;
-          // var d1 = document.getElementById(('x-spreadsheet-demo'));
-          var d1 = document.getElementById('sheetapp');
-            // var d2 = document.getElementsByClassName('x-spreadsheet')[0];
-            // if (d1 !== undefined && d2 !== undefined) {
-            //   d1.removeChild(d2);
-            // }
-          d1.removeChild(d1.firstChild);
-          var d2 = document.createElement("div");
-          d2.setAttribute("id", "x-spreadsheet-demo");
-          d1.appendChild(d2);
+            var d1 = document.getElementById('x-spreadsheet-demo');
+            // var d1 = document.getElementById('sheetapp');
+            var d2 = document.getElementsByClassName('x-spreadsheet')[0];
+             if (d1 !== undefined && d2 !== undefined) {
+             this.xs.removeEvent();
+               d1.removeChild(d2);
+             }
+            //d1.removeChild(d1.firstChild);
+            //var d2 = document.createElement("div");
+            //d2.setAttribute("id", "x-spreadsheet-demo");
+            //d1.appendChild(d2);
 
-            let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
-            xs.loadData(
+            this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
+            this.xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
@@ -233,7 +241,7 @@
                 })
               }, 500)
             });
-            xs.validate()
+            this.xs.validate()
           }
         )
       }

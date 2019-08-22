@@ -74,7 +74,7 @@
           user_id: user.id,
           path: this.form.folder,
           options: JSON.stringify(defaultOptions),
-          styles: JSON.stringify([defaultOptions.style])
+          styles: JSON.stringify([])
         }).then(res => {
           if (res.data.status == '500') {
             this.$message({
