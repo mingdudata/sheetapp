@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="padding: 5px">
-      <el-input @focus="focus" @blur="blurInput" @clear="clearInput"
+      <el-input id="search_input" @focus="focus" @blur="blurInput" @clear="clearInput" @change="changeInput"
                 prefix-icon="el-icon-search" v-model="input" clearable placeholder="搜索" ref="input_ref"></el-input>
     </div>
   </div>
@@ -18,11 +18,16 @@
         clear: false,
       }
     },
+    mounted() {
+      document.getElementById("search_input").addEventListener("keydown", e => {
+        e.stopPropagation();
+      });
+    },
     watch: {
       input(v) {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-          if(this.clear == false) {
+          if (this.clear == false) {
             this.$emit('getData2', this.input);
           }
           this.clear = false;
@@ -30,12 +35,11 @@
       }
     },
     methods: {
-    focus() {
-      console.log("35")
-      this.$emit("setChange");
-    },
-      changeInput() {
-        console.log("changeInput")
+      focus() {
+        this.$emit("setChange");
+      },
+      changeInput(e) {
+        console.log("42")
       },
       clearInput(e) {
         this.$emit('setLabel', 2);

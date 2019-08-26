@@ -26,7 +26,8 @@ let constantRouterMap = [
   {
     path: '/weixincallback',
     component: WeiXinCallBack,
-  }
+  },
+
 ];
 export {constantRouterMap}
 

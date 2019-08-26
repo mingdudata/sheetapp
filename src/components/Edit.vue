@@ -1,5 +1,5 @@
 <template>
-  <div id="sheetapp">
+  <div>
     <div id="x-spreadsheet-demo"></div>
   </div>
 </template>
@@ -153,7 +153,7 @@
                     }
                   })
                 }, 1000);
-                  let d = Date.now() + parseInt(Math.random() * 9999);
+                let d = Date.now() + parseInt(Math.random() * 9999);
                 setTimeout(() => {
                   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
@@ -207,10 +207,10 @@
             var d1 = document.getElementById('x-spreadsheet-demo');
             // var d1 = document.getElementById('sheetapp');
             var d2 = document.getElementsByClassName('x-spreadsheet')[0];
-             if (d1 !== undefined && d2 !== undefined) {
-             this.xs.removeEvent();
-               d1.removeChild(d2);
-             }
+            if (d1 !== undefined && d2 !== undefined) {
+              this.xs.removeEvent();
+              d1.removeChild(d2);
+            }
             //d1.removeChild(d1.firstChild);
             //var d2 = document.createElement("div");
             //d2.setAttribute("id", "x-spreadsheet-demo");
