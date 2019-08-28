@@ -209,6 +209,7 @@
               d1.removeChild(d2);
             }
 
+            console.log("..")
             this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
             console.log(response.data.sheet_auto_filter);
             this.xs.loadData(
