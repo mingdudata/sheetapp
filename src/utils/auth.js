@@ -29,5 +29,6 @@ export function removeToken2(TokenKey) {
   return Cookies.remove(TokenKey)
 }
 
+
 export const weixin_url =
-  "https://open.weixin.qq.com/connect/qrconnect?appid=wx4df0678ff967e226&redirect_uri=http%3a%2f%2f180.169.75.199:5004/weixincallback&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";
+  "https://open.weixin.qq.com/connect/qrconnect?appid=wx4df0678ff967e226&redirect_uri=http%3a%2f%2f180.169.75.199:5004/edit/wx/login&response_type=code&scope=snsapi_login&state=STATE#wechat_redirect";

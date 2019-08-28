@@ -110,19 +110,18 @@
       },
       reqTableData() {
         this.loadSheetData().then(response => {
-            console.log(response.data.date, this.date);
             if (response.data.date != this.date) {
               return;
             }
             this.data = typeof response.data.sheet_details == 'string'
               ? JSON.parse(response.data.sheet_details) : response.data.sheet_details;
 
-            if (typeof response.data.sheet_styles === "string" && JSON.parse(response.data.sheet_styles) ) {
+            if (typeof response.data.sheet_styles === "string" && JSON.parse(response.data.sheet_styles)) {
               this.styles = JSON.parse(response.data.sheet_styles);
             } else {
               this.styles = response.data.sheet_styles
             }
-            console.log(this.styles)
+          console.log(response.data);
             this.options.formula = {
               id: this.sheet_id,
               axios: this.$axios,
@@ -203,38 +202,36 @@
               }
             };
             this.options = this.loadRowAndCol(this.options, response.data.neat_flex);
-            // this.options = wlandOption;
             var d1 = document.getElementById('x-spreadsheet-demo');
-            // var d1 = document.getElementById('sheetapp');
             var d2 = document.getElementsByClassName('x-spreadsheet')[0];
             if (d1 !== undefined && d2 !== undefined) {
               this.xs.removeEvent();
               d1.removeChild(d2);
             }
-            //d1.removeChild(d1.firstChild);
-            //var d2 = document.createElement("div");
-            //d2.setAttribute("id", "x-spreadsheet-demo");
-            //d1.appendChild(d2);
 
             this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
+            console.log(response.data.sheet_auto_filter);
             this.xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
+                autofilter: response.data.sheet_auto_filter,
+                pictures: response.data.sheet_pictures,
                 flex: this.loadNeatFlex(response.data.neat_flex)
               }
             ).change(data => {
               let self = this;
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
-                self.refresh = true
-                console.log(data, self.id2, "52")
+                self.refresh = true;
                 self.$axios.post(self.EDIT + "/edit_save", {
                   data: JSON.stringify(data.rows),
                   trade_code: self.trade_code,
                   styles: data.styles,
                   options: JSON.stringify(self.options),
                   id: self.sheet_id,
+                  pictures: data.pictures,
+                  autofilter: data.autofilter,
                   id2: self.id2
                 }).then(res => {
                   self.$emit("loadCatalogueData");

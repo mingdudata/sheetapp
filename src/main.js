@@ -44,11 +44,11 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.path == '/weixincallback') {
-      loginByWeixin(axios, 'http://192.168.31.9:5017/edit', {code: to.query.code}).then(res => {
-        setToken2("user", res.data.data);
-        setToken(res.data.data.nickname);
-        window.close();
-      });
+      if(to.query) {
+        setToken2("user", to.query);
+        setToken(to.query.nickname);
+      }
+      window.close()
     } else if (to.path == '/login') { //如果是登录页面路径，就直接next()
       next();
     } else { //不然就跳转到登录；
