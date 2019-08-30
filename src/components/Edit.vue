@@ -84,7 +84,7 @@
         }
         return {};
       },
-      loadRowAndCol(options, neat_flex) {
+      loadRowAndCol(options, neat_flex, op) {
         if (neat_flex) {
           options.row = {
             len: neat_flex["rows"],
@@ -99,12 +99,19 @@
           options.col = {
             len: neat_flex["col"],
           };
+
         }
         options.view = {
           width: () => {
             return document.body.clientWidth - 280 - 10 - 68;
           }
         };
+          if(op.col) {
+            options.col = op.col
+          }
+          if(op.row) {
+            options.row = op.row
+          }
         options.showFreeze = true;
         return options;
       },
@@ -201,7 +208,7 @@
                 }, 3000);
               }
             };
-            this.options = this.loadRowAndCol(this.options, response.data.neat_flex);
+            this.options = this.loadRowAndCol(this.options, response.data.neat_flex, response.data.sheet_options);
             var d1 = document.getElementById('x-spreadsheet-demo');
             var d2 = document.getElementsByClassName('x-spreadsheet')[0];
             if (d1 !== undefined && d2 !== undefined) {
@@ -237,7 +244,7 @@
                 }).then(res => {
                   self.$emit("loadCatalogueData");
                 })
-              }, 500)
+              }, 200)
             });
             this.xs.validate()
           }
