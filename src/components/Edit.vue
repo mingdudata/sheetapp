@@ -32,6 +32,8 @@
       this.reqTableData()
     },
     destroyed() {
+      if() {
+      }
       this.date = "";
       this.xs.removeEvent();
       console.log(this.xs,);
