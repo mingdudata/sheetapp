@@ -50,7 +50,7 @@
         })
       },
       addAFile() {
-        if (this.form.name == '' || this.form.folderType == '') {
+        if (this.form.name == '' || this.form.folderType == '' || this.form.folder == '') {
           this.$message({
             message: '文件信息不能为空',
             type: 'warning'

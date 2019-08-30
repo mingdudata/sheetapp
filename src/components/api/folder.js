@@ -24,13 +24,14 @@ export function getOpenFileApi(axios, EDIT, data) {
 }
 
 export function removeFileApi(axios, EDIT, data) {
-  const {_id, file_id, user_id, type, path} = data;
+  const {_id, file_id, user_id, type, path, path2} = data;
   return axios.post(EDIT + "/remove_file", {
     id: _id,
     file_id: file_id,
     user_id: user_id,
     path: path,
-    type: type
+    type: type,
+    path2: path2
   });
 }
 

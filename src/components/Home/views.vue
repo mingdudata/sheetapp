@@ -147,9 +147,10 @@
           file_id: this.entity.file_id || "/home" + this.entity.path,
           _id: this.entity.id,
           type: this.entity.type,
-          path: this.entity.parent
+          path: this.entity.parent,
+          path2: this.entity.path,
         };
-        console.log(args, "92")
+        console.log(this.entity, "92")
         removeFileApi(this.$axios, this.EDIT, args).then(res => {
           this.$message({message: '删除成功', type: 'success', showClose: true});
           this.$emit("loadCatalogueData");
