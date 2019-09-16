@@ -7,6 +7,9 @@
 <script>
   import Xspreadsheet from 'x-spreadsheet-master'
   import {styles, wlandOption} from "./styles";
+  import Sheet from "./core/Sheet"
+  import {mapGetters, mapMutations} from 'vuex'
+  import {getToken2} from "../utils/auth";
 
   export default {
     name: "Edit",
@@ -20,25 +23,53 @@
         options: {},
         trade_code: '',
         xs: null,
-        date: 0
+        date: 0,
+        sh: null,
+        mo_time: null,
       }
     },
-
+ computed: {
+      ...mapGetters([
+        'sheet',
+      ])
+    },
     mounted() {
-      if (this.sheet_id == null || this.sheet_id == undefined) {
+      this.mo_time = setTimeout(() => {
+        if (this.sheet_id == null || this.sheet_id == undefined) {
         this.$router.push({path: '/home'})
         return;
       }
-      this.reqTableData()
+      this.reqTableData();
+      }, 100)
     },
     destroyed() {
-      if() {
+      this.axiosArr = [];
+      if(this.mo_time) {
+        clearTimeout(this.mo_time);
       }
-      this.date = "";
-      this.xs.removeEvent();
-      console.log(this.xs,);
+      if(!this.xs) {
+        return
+      }
+      let info = this.xs.getEditorStatus();
+      if(this.sheet != null) {
+        // 传数据
+        let text = this.xs.getText(this.sheet.alias);
+        this.sheet.setText(text);
+         this.setSheet(this.sheet);
+
+      }
+      if(info.status == true && typeof this.sh != 'string') {
+        this.sh.setProp(info.ri, info.ci, info.inputText, info.status);
+        this.setSheet(this.sh);
+      } else {
+        this.date = "";
+        this.xs.removeEvent();
+      }
     },
     methods: {
+      ...mapMutations({
+        setSheet: "SET_SHEET",
+      }),
       addUrlRelPath(query) {
         query.url_rel_path = "/sec_page/600548"
         return query
@@ -49,7 +80,8 @@
           this.$axios.get(this.EDIT + "/edit_find", {
             params: {
               id: this.sheet_id,
-              date: this.date
+              date: this.date,
+              ref: true,
             }
           }).then(response => {
             resolve(response)
@@ -67,7 +99,6 @@
       },
       parseFormulaData(data) {
         Object.keys(data).forEach(i => {
-          // console.log(data[i], "49");
           Object.keys(data[i]).forEach(i2 => {
             Object.keys(data[i][i2]).forEach(i3 => {
               if (this.formula(data[i][i2][i3].text, "wland")) {
@@ -85,6 +116,24 @@
           return neat_flex.neat_flex;
         }
         return {};
+      },
+      sheetMethods() {
+        let methods = {
+          axios: this.$axios,
+          user_id: getToken2('user').id,
+          sheet_id: this.sheet_id,
+          async getData(axios, alias, user_id, name, sheet_id) {
+             let res = await  axios.post("http://180.169.75.199:5004/edit/edit_find_by_alias", {
+              alias: alias,
+              user_id: user_id,
+              name: name,
+              sheet_id: sheet_id
+            });
+
+             return res;
+          }
+        };
+        return methods;
       },
       loadRowAndCol(options, neat_flex, op) {
         if (neat_flex) {
@@ -119,6 +168,11 @@
       },
       reqTableData() {
         this.loadSheetData().then(response => {
+          this.sh = (!this.sheet || this.sheet.status  === false) ? new Sheet(this.$route.path) : "";
+
+          if(this.sheet) {
+          this.sheet.setAlias(this.$route.name);
+          }
             if (response.data.date != this.date) {
               return;
             }
@@ -147,7 +201,7 @@
                     id: formula.id,
                     date: Date.now() + parseInt(Math.random() * 9999)
                   }).then(res => {
-                    if (res.data.enter == "wland" || res.data.enter == "wfr") {
+                    if (res.data.enter == "wland" || res.data.enter == "wfr" || res.data.enter == "city") {
                       let args = {};
                       if (JSON.stringify(res.data.sheet_styles) == "{}") {
                         args['styles'] = formula.styles;
@@ -160,7 +214,7 @@
                       table.render();
                     }
                   })
-                }, 1000);
+                }, 100);
                 let d = Date.now() + parseInt(Math.random() * 9999);
                 setTimeout(() => {
                   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
@@ -219,18 +273,20 @@
             }
 
             console.log("..")
-            this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options);
+            this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods(), this.$route.name);
             console.log(response.data.sheet_auto_filter);
             this.xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
+                merges: response.data.sheet_merges,
                 autofilter: response.data.sheet_auto_filter,
                 pictures: response.data.sheet_pictures,
                 flex: this.loadNeatFlex(response.data.neat_flex)
               }
             ).change(data => {
               let self = this;
+              console.log(data);
               clearTimeout(this.my_timer);
               this.my_timer = setTimeout(function () {
                 self.refresh = true;
@@ -240,6 +296,7 @@
                   styles: data.styles,
                   options: JSON.stringify(self.options),
                   id: self.sheet_id,
+                  merges: data.merges,
                   pictures: data.pictures,
                   autofilter: data.autofilter,
                   id2: self.id2
@@ -248,8 +305,17 @@
                 })
               }, 200)
             });
-            this.xs.validate()
+             console.log(this.sheet, this.$route);
+              if(this.sheet && this.sheet.status === true && this.sheet.name != this.$route.path) {
+                console.log(this.xs);
+                this.xs.setEditorText();
+              } else if(this.sheet && this.sheet.status === true  && this.sheet.name == this.$route.path) {
+                this.xs.setTextEnd(this.sheet.inputText, this.sheet.ri, this.sheet.ci);
+                this.setSheet(null);
+                this.sh = (!this.sheet || this.sheet.status  === false) ? new Sheet(this.$route.path) : "";
+              }
           }
+
         )
       }
     }
@@ -259,3 +325,4 @@
 <style scoped>
 
 </style>
+

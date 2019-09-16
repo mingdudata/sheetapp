@@ -192,6 +192,7 @@
       },
       open(index, indexPath) {
         // 最近一次点击 插入数据库
+
         let args = {
           user_id: getToken2('user').id,
           file_id: index

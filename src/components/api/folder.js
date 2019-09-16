@@ -1,5 +1,6 @@
 export function openFileRecentlyApi(axios, EDIT, data) {
   const {user_id, file_id} = data;
+
   return axios.post(EDIT + "/openFileRecently", {
     user_id: user_id,
     file_id: file_id

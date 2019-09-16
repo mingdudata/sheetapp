@@ -11,7 +11,7 @@
           </div>
         </el-scrollbar>
       </el-col>
-      <el-col style="position: absolute; left: 280px;" :span="20">
+      <el-col style="position: absolute; left: 280px; top: 0px" :span="20">
         <sheet/>
       </el-col>
     </el-row>
@@ -392,7 +392,7 @@
           if (a_dir.childs) {
             this.create_route_b(a_dir.childs, arr, p)
           } else {
-            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id });
+            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
             arr.push(args);
           }
         })

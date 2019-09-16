@@ -72,9 +72,11 @@
         };
         console.log("26", keyData, key)
 
-        openFileRecentlyApi(this.$axios, this.EDIT, args).then(() => {
+        setTimeout(() => {
+          openFileRecentlyApi(this.$axios, this.EDIT, args).then(() => {
           this.setActiveIndex(key);
         });
+        }, 0)
       },
       handleClose(key, keyPath) {
         console.log(key, keyPath);

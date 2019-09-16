@@ -63,7 +63,8 @@
           width: document.body.clientWidth,
           height: '100%',
           position: 'absolute',
-          left: '68px'
+          left: '68px',
+          top: '0px'
         },
         type: 1
       }

@@ -3,6 +3,7 @@ const state = {
   entity: {},
   menuData: [],
   wxwindow: null,
+  sheet: null,
 }
 
 export default state

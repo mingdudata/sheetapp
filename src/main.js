@@ -13,7 +13,7 @@ import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import {loginByWeixin} from "./components/api/login";
 import Edit from './components/component/edit'
-
+ import './axios_config'
 Vue.use(Edit);
 Vue.use(contentmenu);
 Vue.config.productionTip = false

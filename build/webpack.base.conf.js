@@ -40,6 +40,14 @@ module.exports = {
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
+     {
+          test: /\.worker\.js$/,
+          options: {
+            limit: 10000,
+            name: utils.assetsPath('/test.worker.js')
+          },
+           loader: 'worker-loader',
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',

@@ -15,6 +15,9 @@ const mutations = {
   },
   [types.SET_WX_WINDOW](state, name) {
     state.wxwindow = name;
+  },
+  [types.SET_SHEET](state, name) {
+    state.sheet = name;
   }
 }
 

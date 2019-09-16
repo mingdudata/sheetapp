@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Edit from '../../Edit'
 let p = "/home";
 
-let edit = (self, {path, id, id2}) => {
+let edit = (self, {path, id, id2, name}) => {
   let args = {
     path: path,
-    name: id + id2,
+    name: name,
     component: Vue.component('edit', {
       data: function () {
         return {
@@ -22,7 +22,7 @@ let edit = (self, {path, id, id2}) => {
         }
       },
       components: {Edit},
-      template: ' <Edit :sheet_id="id" :id2="id2"  @loadCatalogueData="loadCatalogueData"/> </el-scrollbar>'
+      template: ' <Edit :sheet_id="id" :id2="id2"  @loadCatalogueData="loadCatalogueData"/>  '
     }),
   };
   return args;
