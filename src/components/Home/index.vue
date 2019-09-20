@@ -130,7 +130,6 @@
       }),
       loadCatalogueData() {
         this.loadCataloguePromise().then(res => {
-          console.log("309", res.data)
           this.setMenuData(res.data);
         })
       },

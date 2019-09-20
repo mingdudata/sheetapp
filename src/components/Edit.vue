@@ -82,6 +82,7 @@
               id: this.sheet_id,
               date: this.date,
               ref: true,
+              user_id: getToken2('user').id,
             }
           }).then(response => {
             resolve(response)
@@ -157,8 +158,11 @@
             return document.body.clientWidth - 280 - 10 - 68;
           }
         };
-          if(op.col) {
-            options.col = op.col
+        if(typeof op === 'string') {
+          op = JSON.parse(op)
+        }
+          if(op.cols) {
+            options.cols = op.cols
           }
           if(op.row) {
             options.row = op.row
@@ -168,6 +172,9 @@
       },
       reqTableData() {
         this.loadSheetData().then(response => {
+          if(response.data === "error") {
+            return;
+          }
           this.sh = (!this.sheet || this.sheet.status  === false) ? new Sheet(this.$route.path) : "";
 
           if(this.sheet) {
@@ -193,13 +200,14 @@
               timer: null,
               timer2: null,
               styles: styles,
-              wland(formula, data, table) {
+              wland(formula, data, table, recalc = false) {
                 clearTimeout(formula.timer);
                 clearTimeout(formula.timer2);
                 formula.timer = setTimeout(() => {
                   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
                     id: formula.id,
-                    date: Date.now() + parseInt(Math.random() * 9999)
+                    date: Date.now() + parseInt(Math.random() * 9999),
+                    recalc: recalc
                   }).then(res => {
                     if (res.data.enter == "wland" || res.data.enter == "wfr" || res.data.enter == "city") {
                       let args = {};
@@ -211,57 +219,59 @@
                         ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
                       args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
                       data.setData(args);
-                      table.render();
+                       table.proxy.diff = 305;
+                       table.proxy.processBackEnd();
+                       table.render();
                     }
                   })
-                }, 100);
-                let d = Date.now() + parseInt(Math.random() * 9999);
-                setTimeout(() => {
-                  formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
-                    id: formula.id,
-                    date: d
-                  }).then(res => {
-                    if (res.data.enter == "rtd" && res.data.date === d) {
-                      let args = {};
-                      if (JSON.stringify(res.data.sheet_styles) == "{}") {
-                        args['styles'] = formula.styles;
-                      }
-
-                      args['rows'] = typeof res.data.sheet_details == 'string'
-                        ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
-                      args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
-                      data.setData(args);
-                      table.render();
-                    } else {
-                      clearInterval(formula.timer2);
-                    }
-                    d = Date.now() + parseInt(Math.random() * 9999);
-                  });
                 }, 500);
+                // let d = Date.now() + parseInt(Math.random() * 9999);
+                // setTimeout(() => {
+                //   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
+                //     id: formula.id,
+                //     date: d
+                //   }).then(res => {
+                //     if (res.data.enter == "rtd" && res.data.date === d) {
+                //       let args = {};
+                //       if (JSON.stringify(res.data.sheet_styles) == "{}") {
+                //         args['styles'] = formula.styles;
+                //       }
+                //
+                //       args['rows'] = typeof res.data.sheet_details == 'string'
+                //         ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
+                //       args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
+                //       data.setData(args);
+                //       table.render();
+                //     } else {
+                //       clearInterval(formula.timer2);
+                //     }
+                //     d = Date.now() + parseInt(Math.random() * 9999);
+                //   });
+                // }, 500);
 
-                formula.timer2 = setInterval(() => {
-                  formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
-                    id: formula.id,
-                    date: d
-                  }).then(res => {
-                    console.log(res.data.enter)
-                    if (res.data.enter == "rtd" && res.data.date === d) {
-                      let args = {};
-                      if (JSON.stringify(res.data.sheet_styles) == "{}") {
-                        args['styles'] = formula.styles;
-                      }
-
-                      args['rows'] = typeof res.data.sheet_details == 'string'
-                        ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
-                      args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
-                      data.setData(args);
-                      table.render();
-                    } else {
-                      clearInterval(formula.timer2);
-                    }
-                    d = Date.now() + parseInt(Math.random() * 9999);
-                  })
-                }, 3000);
+                // formula.timer2 = setInterval(() => {
+                //   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
+                //     id: formula.id,
+                //     date: d
+                //   } ).then(res => {
+                //     console.log(res.data.enter)
+                //     if (res.data.enter == "rtd" && res.data.date === d) {
+                //       let args = {};
+                //       if (JSON.stringify(res.data.sheet_styles) == "{}") {
+                //         args['styles'] = formula.styles;
+                //       }
+                //
+                //       args['rows'] = typeof res.data.sheet_details == 'string'
+                //         ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
+                //       args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
+                //       data.setData(args);
+                //       table.render();
+                //     } else {
+                //       clearInterval(formula.timer2);
+                //     }
+                //     d = Date.now() + parseInt(Math.random() * 9999);
+                //   })
+                // }, 3000);
               }
             };
             this.options = this.loadRowAndCol(this.options, response.data.neat_flex, response.data.sheet_options);
@@ -274,38 +284,54 @@
 
             console.log("..")
             this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods(), this.$route.name);
-            console.log(response.data.sheet_auto_filter);
-            this.xs.loadData(
+           this.xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
                 merges: response.data.sheet_merges,
                 autofilter: response.data.sheet_auto_filter,
                 pictures: response.data.sheet_pictures,
-                flex: this.loadNeatFlex(response.data.neat_flex)
+                flex: this.loadNeatFlex(response.data.neat_flex),
+                refRow: response.data.sheet_refRow,
+                cols: (this.options && this.options.cols) || {}
               }
             ).change(data => {
-              let self = this;
-              console.log(data);
-              clearTimeout(this.my_timer);
-              this.my_timer = setTimeout(function () {
-                self.refresh = true;
-                self.$axios.post(self.EDIT + "/edit_save", {
-                  data: JSON.stringify(data.rows),
-                  trade_code: self.trade_code,
-                  styles: data.styles,
-                  options: JSON.stringify(self.options),
-                  id: self.sheet_id,
-                  merges: data.merges,
-                  pictures: data.pictures,
-                  autofilter: data.autofilter,
-                  id2: self.id2
-                }).then(res => {
-                  self.$emit("loadCatalogueData");
-                })
-              }, 200)
+              if(data.ref && data.ref == true) {
+                if(data.data.length > 0) {
+                 this.$axios.post(this.EDIT + "/edit_ref_save", {
+                  data: data.data,
+                });
+                }
+              } else {
+                let self = this;
+                console.log(data);
+                clearTimeout(this.my_timer);
+                delete self.options['formula'];
+                self.options['row'] = {
+                  'len': data.rows['len']
+                };
+
+                  self.options['cols'] = data.cols;
+
+                this.my_timer = setTimeout(function () {
+                  self.refresh = true;
+                  self.$axios.post(self.EDIT + "/edit_save", {
+                    data: JSON.stringify(data.rows),
+                    trade_code: self.trade_code,
+                    styles: data.styles,
+                    options: JSON.stringify(self.options),
+                    id: self.sheet_id,
+                    merges: data.merges,
+                    pictures: data.pictures,
+                    autofilter: data.autofilter,
+                    id2: self.id2
+                  }).then(res => {
+                    self.$emit("loadCatalogueData");
+                  })
+                }, 400)
+              }
             });
-             console.log(this.sheet, this.$route);
+
               if(this.sheet && this.sheet.status === true && this.sheet.name != this.$route.path) {
                 console.log(this.xs);
                 this.xs.setEditorText();
