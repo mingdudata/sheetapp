@@ -92,7 +92,7 @@
         editableTabsValue: '1',
         editableTabs: [],
         showNewCompent: false,
-        searchIndex: []
+        searchIndex: [],
       }
     },
     mounted() {

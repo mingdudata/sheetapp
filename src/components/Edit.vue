@@ -26,6 +26,9 @@
         date: 0,
         sh: null,
         mo_time: null,
+        topId: "",
+        socket: null,
+        editing: 0,
       }
     },
  computed: {
@@ -41,6 +44,49 @@
       }
       this.reqTableData();
       }, 100)
+    },
+    created() {
+         let namespace = '/edit_message';
+       this.socket = new WebSocket("ws://180.169.75.199:5004/edit" + namespace);
+      this.socket.onopen = function (msg) {
+            console.log('WebSocket opened!');
+        };
+      let self = this;
+        this.socket.onmessage = function (message) {
+            // console.log('receive message: ' + message.data);
+          self.editing = self.editing - 1;
+          if(self.editing <= 0) {
+             let res = JSON.parse(message.data);
+            if(typeof  res !== 'object') {
+              return;
+            }
+            if (res.enter == "wland" || res.enter == "wfr" || res.enter == "city") {
+              let args = {};
+              if (JSON.stringify(res.sheet_styles) == "{}") {
+                args['styles'] = formula.styles;
+              }
+
+              args['rows'] = typeof res.sheet_details == 'string'
+                ? JSON.parse(res.sheet_details) : res.sheet_details;
+              args['flex'] = res.neat_flex ? res.neat_flex.neat_flex : {};
+              // data.setData(args);
+              self.xs.data.setData(args);
+             let {recalc, table} =  self.xs.sheet.getTable();
+               if(recalc === false) {
+                 table.proxy.diff = 306;
+                 // table.proxy.processBackEnd();
+                table.render();
+              }
+            }
+          }
+
+         };
+        this.socket.onerror = function (error) {
+            console.log('Error: ' + error.name + error.number);
+        };
+        this.socket.onclose = function (e) {
+            console.log('WebSocket closed!' + e.code + ' ' + e.reason + ' ' + e.wasClean);
+        };
     },
     destroyed() {
       this.axiosArr = [];
@@ -136,6 +182,18 @@
         };
         return methods;
       },
+      editMessage(data , trade_code, styles, options, id, merges, pictures, autofilter, id2) {
+        let self = this;
+        return new Promise(function(resolve, reject){
+          let obj = {data , trade_code, styles, options, id, merges, pictures, autofilter, id2};
+          self.editing = self.editing + 1;
+          self.socket.send(JSON.stringify(obj));
+            resolve()
+        });
+        },
+      editFind() {
+
+      },
       loadRowAndCol(options, neat_flex, op) {
         if (neat_flex) {
           options.row = {
@@ -201,6 +259,9 @@
               timer2: null,
               styles: styles,
               wland(formula, data, table, recalc = false) {
+                if(!recalc) {
+                  return;
+                }
                 clearTimeout(formula.timer);
                 clearTimeout(formula.timer2);
                 formula.timer = setTimeout(() => {
@@ -219,12 +280,19 @@
                         ? JSON.parse(res.data.sheet_details) : res.data.sheet_details;
                       args['flex'] = res.data.neat_flex ? res.data.neat_flex.neat_flex : {};
                       data.setData(args);
-                       table.proxy.diff = 305;
-                       table.proxy.processBackEnd();
+                      if(recalc === false) {
+                         table.proxy.diff = 306;
+                         // table.proxy.processBackEnd();
+                        table.render();
+                      }
+                    }
+                    if(recalc) {
+                        table.proxy.diff = 306;
+                       // table.proxy.processBackEnd();
                        table.render();
                     }
                   })
-                }, 500);
+                }, 500);  // 有个问题， edit_find在edit_save之前执行完
                 // let d = Date.now() + parseInt(Math.random() * 9999);
                 // setTimeout(() => {
                 //   formula.axios.post("http://180.169.75.199:5004/edit/edit_find", {
@@ -314,20 +382,40 @@
                   self.options['cols'] = data.cols;
 
                 this.my_timer = setTimeout(function () {
-                  self.refresh = true;
-                  self.$axios.post(self.EDIT + "/edit_save", {
-                    data: JSON.stringify(data.rows),
-                    trade_code: self.trade_code,
-                    styles: data.styles,
-                    options: JSON.stringify(self.options),
-                    id: self.sheet_id,
-                    merges: data.merges,
-                    pictures: data.pictures,
-                    autofilter: data.autofilter,
-                    id2: self.id2
-                  }).then(res => {
-                    self.$emit("loadCatalogueData");
-                  })
+                     self.refresh = true;
+                  self.editMessage(
+                    JSON.stringify(data.rows),
+                    self.trade_code,
+                      data.styles,
+                   JSON.stringify(self.options),
+                     self.sheet_id,
+                    data.merges,
+                     data.pictures,
+                     data.autofilter,
+                      self.id2
+                   ).then(() => {
+
+                    if(this.topId !== this.id2) {
+                      self.$emit("loadCatalogueData");
+                      this.topId = self.id2;
+                    }
+                  });
+                  // self.$axios.post(self.EDIT + "/edit_save", {
+                  //   data: JSON.stringify(data.rows),
+                  //   trade_code: self.trade_code,
+                  //   styles: data.styles,
+                  //   options: JSON.stringify(self.options),
+                  //   id: self.sheet_id,
+                  //   merges: data.merges,
+                  //   pictures: data.pictures,
+                  //   autofilter: data.autofilter,
+                  //   id2: self.id2
+                  // }).then(res => {
+                  //   if(this.topId !== this.id2) {
+                  //     self.$emit("loadCatalogueData");
+                  //     this.topId = self.id2;
+                  //   }
+                  // })
                 }, 400)
               }
             });
