@@ -36,12 +36,17 @@ export function removeFileApi(axios, EDIT, data) {
   });
 }
 
-
-
 export function changeFileNameApi(axios, EDIT, data) {
   const {_id, name} = data;
   return axios.post(EDIT + "/edit_catalogue/rename", {
     id: _id,
     name: name
+  });
+}
+
+export function revisionsApi(axios, EDIT, data) {
+  const { _id} = data;
+   return axios.post(EDIT + "/edit_versions", {
+    id: _id
   });
 }

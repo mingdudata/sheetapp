@@ -4,6 +4,7 @@ const state = {
   menuData: [],
   wxwindow: null,
   sheet: null,
+  xs: null,
 }
 
 export default state

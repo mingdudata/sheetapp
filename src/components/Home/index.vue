@@ -29,6 +29,7 @@
   import {getToken, getToken2, removeToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
   import {edit, p} from "../component/edit/edit_component";
+  import {beforeUrlProcess} from "../core/urlProcess";
 
   export default {
     name: "index",
@@ -110,7 +111,8 @@
 
         let redirect = this.$route.query.redirect;
         if (redirect) {
-          let exist = false
+          let exist = false;
+          redirect = beforeUrlProcess(redirect);
           Object.keys(pm).forEach(e => {
             if (pm[e].path == redirect)
               exist = true;

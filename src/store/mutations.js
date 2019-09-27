@@ -18,6 +18,9 @@ const mutations = {
   },
   [types.SET_SHEET](state, name) {
     state.sheet = name;
+  },
+  [types.SET_XS](state, name) {
+    state.xs = name;
   }
 }
 

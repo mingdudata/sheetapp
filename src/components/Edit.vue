@@ -10,6 +10,7 @@
   import Sheet from "./core/Sheet"
   import {mapGetters, mapMutations} from 'vuex'
   import {getToken2} from "../utils/auth";
+  import {revisionsApi} from "./api/folder";
 
   export default {
     name: "Edit",
@@ -22,7 +23,6 @@
         data: '',
         options: {},
         trade_code: '',
-        xs: null,
         date: 0,
         sh: null,
         mo_time: null,
@@ -34,6 +34,7 @@
  computed: {
       ...mapGetters([
         'sheet',
+        'xs',
       ])
     },
     mounted() {
@@ -115,6 +116,7 @@
     methods: {
       ...mapMutations({
         setSheet: "SET_SHEET",
+        setXs: "SET_XS"
       }),
       addUrlRelPath(query) {
         query.url_rel_path = "/sec_page/600548"
@@ -184,12 +186,14 @@
       },
       editMessage(data , trade_code, styles, options, id, merges, pictures, autofilter, id2) {
         let self = this;
-        return new Promise(function(resolve, reject){
-          let obj = {data , trade_code, styles, options, id, merges, pictures, autofilter, id2};
+           let obj = {data , trade_code, styles, options, id, merges, pictures, autofilter, id2};
           self.editing = self.editing + 1;
           self.socket.send(JSON.stringify(obj));
-            resolve()
-        });
+            if(this.topId !== this.id2) {
+              self.$emit("loadCatalogueData");
+              this.topId = self.id2;
+          }
+
         },
       editFind() {
 
@@ -228,8 +232,56 @@
         options.showFreeze = true;
         return options;
       },
+      haveRevisions() {
+        console.log(this.$route);
+        let {query} = this.$route;
+        if(query.revision &&query.revision === true) {
+          setTimeout(() => {
+            this.revisionOpen(query._id);
+          }, 800);
+        }
+      },
+       revisionOpen(id) {
+         let args = {
+           _id: id,
+        };
+       revisionsApi(this.$axios, this.EDIT, args).then(res => {
+         if(!res.data.state) {
+             this.$message({message: res.data.message, type: 'error', showClose: true});
+         } else {
+
+           if(res.data.data === "error") {
+             return;
+           }
+            let data = typeof res.data.data.sheet_details == 'string'
+              ? JSON.parse(res.data.data.sheet_details) : res.data.data.sheet_details;
+           let styles = "";
+             if (typeof res.data.data.sheet_styles === "string" && JSON.parse(res.data.data.sheet_styles)) {
+               styles = JSON.parse(res.data.data.sheet_styles);
+            } else {
+              styles = res.data.data.sheet_styles;
+            }
+           let options = this.loadRowAndCol({}, res.data.data.neat_flex, res.data.data.sheet_options);
+              args = {
+               styles: styles,
+                rows:  data,
+                options: options,
+                merges:  res.data.data.sheet_merges,
+                autofilter:  res.data.data.sheet_auto_filter,
+                pictures:  res.data.data.sheet_pictures,
+                flex: this.loadNeatFlex(res.data.data.neat_flex),
+                cols: ( options && options.cols) || {}
+             };
+            this.xs.plugIn.openFrame(() => {return document.body.clientWidth - 280  - 68}, res.data.message, args, {
+              axios: this.$axios,
+              url: this.EDIT + "/edit_versions/find"
+            }, this);
+         }
+        });
+      },
       reqTableData() {
         this.loadSheetData().then(response => {
+          this.haveRevisions();
           if(response.data === "error") {
             return;
           }
@@ -351,8 +403,9 @@
             }
 
             console.log("..")
-            this.xs = new Xspreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods(), this.$route.name);
-           this.xs.loadData(
+          let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods(), this.$route.name);
+            this.setXs(xs);
+            this.xs.loadData(
               {
                 styles: this.styles,
                 rows: this.data,
@@ -364,7 +417,9 @@
                 cols: (this.options && this.options.cols) || {}
               }
             ).change(data => {
-              if(data.ref && data.ref == true) {
+              if(data.editor === false) {
+
+              } else if(data.ref && data.ref == true) {
                 if(data.data.length > 0) {
                  this.$axios.post(this.EDIT + "/edit_ref_save", {
                   data: data.data,
@@ -393,13 +448,7 @@
                      data.pictures,
                      data.autofilter,
                       self.id2
-                   ).then(() => {
-
-                    if(this.topId !== this.id2) {
-                      self.$emit("loadCatalogueData");
-                      this.topId = self.id2;
-                    }
-                  });
+                   );
                   // self.$axios.post(self.EDIT + "/edit_save", {
                   //   data: JSON.stringify(data.rows),
                   //   trade_code: self.trade_code,
