@@ -11,7 +11,7 @@
           </div>
         </el-scrollbar>
       </el-col>
-      <el-col style="position: absolute; left: 280px; top: 0px" :span="20">
+      <el-col style="position: absolute; left: 280px; top: 0px; height: 100%" :span="20" >
         <sheet/>
       </el-col>
     </el-row>
@@ -20,7 +20,7 @@
 
 <script>
   import ElTree from './ElTree'
-  import Views from './views'
+  import Views from './headViews'
   import New from './new'
   import {styles} from "../styles";
   import {constantRouterMap} from "../../router";
@@ -28,7 +28,7 @@
   import {openFileRecentlyApi} from "../api/folder";
   import {getToken, getToken2, removeToken2} from "../../utils/auth";
   import {mapGetters, mapMutations} from 'vuex'
-  import {edit, p} from "../component/edit/edit_component";
+  import {edit, p, qtxt} from "../component/edit/edit_component";
   import {beforeUrlProcess} from "../core/urlProcess";
 
   export default {
@@ -393,8 +393,15 @@
           if (a_dir.childs) {
             this.create_route_b(a_dir.childs, arr, p)
           } else {
-            let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
+            console.log(a_dir.entity);
+            let {type} = a_dir.entity;
+            if(type === 1) {
+               let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
+               arr.push(args);
+            } else if(type == 3) {
+              let args = qtxt(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
             arr.push(args);
+            }
           }
         })
       },

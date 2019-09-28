@@ -40,20 +40,20 @@
     mounted() {
       this.mo_time = setTimeout(() => {
         if (this.sheet_id == null || this.sheet_id == undefined) {
-        this.$router.push({path: '/home'})
+        this.$router.push({path: '/home'});
         return;
       }
       this.reqTableData();
       }, 100)
     },
     created() {
-         let namespace = '/edit_message';
+        let namespace = '/edit_message';
        this.socket = new WebSocket("ws://180.169.75.199:5004/edit" + namespace);
-      this.socket.onopen = function (msg) {
+        this.socket.onopen = function (msg) {
             console.log('WebSocket opened!');
         };
       let self = this;
-        this.socket.onmessage = function (message) {
+          this.socket.onmessage = function (message) {
             // console.log('receive message: ' + message.data);
           self.editing = self.editing - 1;
           if(self.editing <= 0) {
@@ -80,7 +80,6 @@
               }
             }
           }
-
          };
         this.socket.onerror = function (error) {
             console.log('Error: ' + error.name + error.number);
@@ -193,7 +192,6 @@
               self.$emit("loadCatalogueData");
               this.topId = self.id2;
           }
-
         },
       editFind() {
 
@@ -301,7 +299,7 @@
             } else {
               this.styles = response.data.sheet_styles
             }
-          console.log(response.data);
+
             this.options.formula = {
               id: this.sheet_id,
               axios: this.$axios,

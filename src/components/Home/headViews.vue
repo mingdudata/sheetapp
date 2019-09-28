@@ -28,27 +28,28 @@
         <div v-contextmenu:contextmenu>
           <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
           <v-contextmenu ref="contextmenu" @contextmenu="folderOrFile">
-            <v-contextmenu-item @click="revisions" v-if="!disableFile" >发布</v-contextmenu-item>
-            <v-contextmenu-item @click="createMD" v-if="!disableFile" >创建md文件</v-contextmenu-item>
-            <v-contextmenu-item @click="revisions" v-if="!disableFolder" >恢复历史版本</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile"  >修改名称</v-contextmenu-item>
+            <v-contextmenu-item @click="issue" v-if="!disableFile">发布</v-contextmenu-item>
+            <v-contextmenu-item @click="createMD" v-if="!disableFile">创建md文件</v-contextmenu-item>
+            <v-contextmenu-item @click="revisions" v-if="!disableFolder">恢复历史版本</v-contextmenu-item>
+            <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
             <v-contextmenu-item @click="renameFile" divider>修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="removeFile" >删除</v-contextmenu-item>
+            <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
           </v-contextmenu>
         </div>
       </div>
       <div v-show="change == 2">
         <div v-contextmenu:contextmenu>
+          <!--          {{menuData}}-->
           <el-menu background-color="#FBFBFB" active-text-color="rgb(14, 170, 16)" router :default-active="index"
                    @select="open">
             <nav-menu :navMenus="menuData"/>
           </el-menu>
           <v-contextmenu ref="contextmenu" @contextmenu="folderOrFile">
-            <v-contextmenu-item @click="revisions" v-if="!disableFile" >发布</v-contextmenu-item>
-            <v-contextmenu-item @click="createMD" v-if="!disableFile" >创建md文件</v-contextmenu-item>
-            <v-contextmenu-item @click="revisions" v-if="!disableFolder" >恢复历史版本</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile"   >修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile" divider >修改名称</v-contextmenu-item>
+            <v-contextmenu-item @click="issue" v-if="!disableFile">发布</v-contextmenu-item>
+            <v-contextmenu-item @click="createMD" v-if="!disableFile">创建md文件</v-contextmenu-item>
+            <v-contextmenu-item @click="revisions" v-if="!disableFolder">恢复历史版本</v-contextmenu-item>
+            <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
+            <v-contextmenu-item @click="renameFile" divider>修改名称</v-contextmenu-item>
             <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
           </v-contextmenu>
         </div>
@@ -68,7 +69,9 @@
     </div>
 
     <div>
-      <md-dialog :self="this" :navMenus="menuData" @receive="receive" :dialogFormVisible="dialogFormVisible"></md-dialog>
+      <md-dialog :self="this" @create="pushIntoMenuData" :parent="parentMD" :navMenus="menuData" @receive="receive"
+                 :dialogFormVisible="dialogFormVisible" ref="md" />
+      <issue-dialog  @receive="receive2" :entity="entity" :dialogFormVisible="issueDialogFormVisible"/>
     </div>
   </div>
 </template>
@@ -79,6 +82,7 @@
   import Search from './search'
   import SearchOpen from './SearchOpen'
   import MdDialog from './mdDialog'
+  import IssueDialog from './issueDialog'
   import {
     changeFileNameApi,
     getOpenFileApi,
@@ -88,7 +92,11 @@
     revisionsApi
   } from "../api/folder";
   import {getToken2} from "../../utils/auth";
-  import {mapGetters, mapMutations} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex';
+  import {addQTxtApi} from "../api/qtxt";
+  import {dirBuilder} from "../core/builder";
+  import {qtxt, p} from "../component/edit/edit_component";
+  import {constantRouterMap} from "../../router";
 
   export default {
     name: "views",
@@ -98,6 +106,7 @@
       Search,
       SearchOpen,
       MdDialog,
+      IssueDialog,
     },
     data() {
       return {
@@ -111,17 +120,18 @@
         input: "",
         disableFolder: false,
         disableFile: false,
-        dialogFormVisible: false
+        dialogFormVisible: false,
+        parentMD: "",
+        searchEntity: null,
+        issueDialogFormVisible: false,
       }
     },
     watch: {
       $route(to, from) {
-        console.log(to, "43", from);
         this.setActiveIndex(to.path);
         this.index = to.path;
       },
       menuData() {
-        console.log("94...")
         this.getData("");
       }
     },
@@ -139,9 +149,13 @@
     methods: {
       ...mapMutations({
         setActiveIndex: "SET_ACTIVE_INDEX",
+        setMenuData: "SET_MENU_DATA",
       }),
       receive(value) {
         this.dialogFormVisible = value;
+      },
+      receive2(value) {
+        this.issueDialogFormVisible = value;
       },
       changeFileName() {
         if (this.input == "") {
@@ -163,68 +177,139 @@
           this.$emit("loadCatalogueData");
         });
       },
+      pushIntoMenuData(value) {
+        this.setMenuData(value);
+      },
       folderOrFile(e) {
         let {type} = this.entity;
-        if(type === 2) {
+        if (type === 2) {
           this.disableFolder = true;
           this.disableFile = false;
-        } else {
+        } else if (type === 1) {
           this.disableFolder = false;
+          this.disableFile = true;
+        } else {
+          this.disableFolder = true;
           this.disableFile = true;
         }
       },
       revisionOpen() {
-         let args = {
-           _id: this.entity.id,
+        let args = {
+          _id: this.entity.id,
         };
-       revisionsApi(this.$axios, this.EDIT, args).then(res => {
-         if(!res.data.state) {
-             this.$message({message: res.data.message, type: 'error', showClose: true});
-         } else {
+        revisionsApi(this.$axios, this.EDIT, args).then(res => {
+          if (!res.data.state) {
+            this.$message({message: res.data.message, type: 'error', showClose: true});
+          } else {
 
-           if(res.data.data === "error") {
-             return;
-           }
+            if (res.data.data === "error") {
+              return;
+            }
             let data = typeof res.data.data.sheet_details == 'string'
               ? JSON.parse(res.data.data.sheet_details) : res.data.data.sheet_details;
-           let styles = "";
-             if (typeof res.data.data.sheet_styles === "string" && JSON.parse(res.data.data.sheet_styles)) {
-               styles = JSON.parse(res.data.data.sheet_styles);
+            let styles = "";
+            if (typeof res.data.data.sheet_styles === "string" && JSON.parse(res.data.data.sheet_styles)) {
+              styles = JSON.parse(res.data.data.sheet_styles);
             } else {
               styles = res.data.data.sheet_styles;
             }
-           let options = this.loadRowAndCol({}, res.data.data.neat_flex, res.data.data.sheet_options);
-              args = {
-               styles: styles,
-                rows:  data,
-                options: options,
-                merges:  res.data.data.sheet_merges,
-                autofilter:  res.data.data.sheet_auto_filter,
-                pictures:  res.data.data.sheet_pictures,
-                flex: this.loadNeatFlex(res.data.data.neat_flex),
-                cols: ( options && options.cols) || {}
-             };
-            this.xs.plugIn.openFrame(() => {return document.body.clientWidth - 280  - 68}, res.data.message, args, {
+            let options = this.loadRowAndCol({}, res.data.data.neat_flex, res.data.data.sheet_options);
+            args = {
+              styles: styles,
+              rows: data,
+              options: options,
+              merges: res.data.data.sheet_merges,
+              autofilter: res.data.data.sheet_auto_filter,
+              pictures: res.data.data.sheet_pictures,
+              flex: this.loadNeatFlex(res.data.data.neat_flex),
+              cols: (options && options.cols) || {}
+            };
+            this.xs.plugIn.openFrame(() => {
+              return document.body.clientWidth - 280 - 68
+            }, res.data.message, args, {
               axios: this.$axios,
               url: this.EDIT + "/edit_versions/find"
             }, this);
-         }
+          }
         });
       },
       createMD() {
+        this.parentMD = this.entity.path;
         this.dialogFormVisible = true;
       },
       revisions() {
-        if("/home" + this.entity.path !== this.$route.path) {
-          this.$router.push({path: "/home" + this.entity.path, query: {
-            _id: this.entity.id,
+        if ("/home" + this.entity.path !== this.$route.path) {
+          this.$router.push({
+            path: "/home" + this.entity.path, query: {
+              _id: this.entity.id,
               revision: true
-            }});
+            }
+          });
         } else {
-           this.revisionOpen();
+          this.revisionOpen();
         }
       },
-       loadRowAndCol(options, neat_flex, op) {
+      searchMenuDataIndex(dir, parent, name) {
+        dir.forEach((a_dir) => {
+          if (a_dir.childs) {
+            this.searchMenuDataIndex(a_dir.childs, parent, name)
+          } else {
+            if (a_dir.entity.parent === parent && a_dir.entity.alias === name) {
+              this.searchEntity = a_dir.entity
+            }
+          }
+        })
+      },
+      issue() {
+        let user = getToken2('user');
+        if (!user) {
+          this.$message({
+            message: '您还没有登录哦~',
+            type: 'error'
+          });
+          this.$router.push({path: '/login'});
+          return;
+        }
+        this.searchEntity = null;
+        this.searchMenuDataIndex(this.menuData, this.entity.path, '介绍.qtxt');
+        if (this.searchEntity === null) {
+          addQTxtApi(this.$axios, this.EDIT, {
+            alias: '介绍',
+            folder_type: 'qtxt',
+            user_id: user.id,
+            path: this.entity.path,
+          }).then(res => {
+            if (res.data.status == '500') {
+              this.$message({
+                message: res.data.data,
+                type: 'warning'
+              });
+            } else {
+              this.pushIntoMenuData(res.data.data);
+              this.$message({
+                message: '创建成功',
+                type: 'success'
+              });
+              if (res.data.sheet) {
+                let entity = dirBuilder(res.data.sheet);
+                let routerMap = [];
+                constantRouterMap[1].children.push(qtxt(this, {
+                  path: p + entity.path + "",
+                  id: entity.sheet_id,
+                  id2: entity.sheet_id2
+                }));
+                routerMap.push(constantRouterMap[1])
+                this.$router.addRoutes(routerMap);
+                this.$router.push({path: p + entity.path + ""})
+              }
+              this.$refs.md.operate(res.data.data);
+            }
+          })
+        } else {
+          this.issueDialogFormVisible = true;
+        }
+      },
+      loadRowAndCol(options, neat_flex, op) {
         if (neat_flex) {
           options.row = {
             len: neat_flex["rows"],
@@ -246,15 +331,15 @@
             return document.body.clientWidth - 280 - 10 - 68;
           }
         };
-        if(typeof op === 'string') {
+        if (typeof op === 'string') {
           op = JSON.parse(op)
         }
-          if(op.cols) {
-            options.cols = op.cols
-          }
-          if(op.row) {
-            options.row = op.row
-          }
+        if (op.cols) {
+          options.cols = op.cols
+        }
+        if (op.row) {
+          options.row = op.row
+        }
         options.showFreeze = true;
         return options;
       },
@@ -283,6 +368,9 @@
         this.centerDialogVisible = true;
         this.input = this.entity.alias;
         console.log(this.entity, "92")
+      },
+      loadCatalogueData() {
+        this.$emit("loadCatalogueData");
       },
       getEntity(entity) {
         console.log("96", entity)
@@ -324,8 +412,6 @@
         openFileRecentlyApi(this.$axios, this.EDIT, args);
       },
       getData(fileName = "") {
-
-        // this.change2 = 2;
         let loadTimer = setTimeout(() => {
           this.loading = true;
         }, 50);

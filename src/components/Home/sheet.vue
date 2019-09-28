@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <el-tabs class="marinner" @tab-click="tabClick" @dblclick.native="changeTabName" v-model="editableTabsValue"
              type="card" closable
              @edit="handleTabsEdit">

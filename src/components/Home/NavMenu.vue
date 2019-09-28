@@ -20,7 +20,8 @@
                   :index="'/home' + navMenu.entity.path + ''">
         <template  slot="title">
           <div style="position: relative; left: -11px" @contextmenu.prevent="rightShow(navMenu.entity)">
-            <i :class="navMenu.entity.icon"></i>
+            <i v-if="navMenu.entity.sheet.state" style="color: #0EAA10" :class="navMenu.entity.icon"></i>
+            <i v-else :class="navMenu.entity.icon"></i>
             <span> {{navMenu.entity.alias}}</span>
           </div>
         </template>

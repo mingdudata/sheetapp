@@ -50,3 +50,12 @@ export function revisionsApi(axios, EDIT, data) {
     id: _id
   });
 }
+
+export function issueApi(axios, EDIT, data) {
+  const { user_id, sheet_id, catalogue_id} = data;
+   return axios.post(EDIT + "/share_data", {
+    user_id: user_id,
+     sheet_id: sheet_id,
+     catalogue_id: catalogue_id
+  });
+}

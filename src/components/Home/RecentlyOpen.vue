@@ -2,8 +2,8 @@
   <div style=" background: #FBFBFB">
     <div v-if="type == 1" >
      <el-menu :default-active="index" router active-text-color="rgb(14, 170, 16)" class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
-      <div v-for="(item, index) in data">
-        <el-menu-item :index="'/home' + item.path">
+       <div v-for="(item, index) in data">
+        <el-menu-item v-if="item.type !== 2" :index="'/home' + item.path">
           <div @contextmenu.prevent="rightShow(item)">
             <i class="el-icon-document"></i>
             <span slot="title"
@@ -21,7 +21,7 @@
      <div v-else :id="type + 'sss'" >
      <el-menu :default-active="index" router active-text-color="rgb(14, 170, 16)" class="el-menu-vertical-demo" background-color="#FBFBFB" @select="handleOpen" @close="handleClose">
       <div v-for="(item, index) in data">
-        <el-menu-item :index="'/home' + item.path">
+        <el-menu-item v-if="item.type !== 2" :index="'/home' + item.path">
           <div @contextmenu.prevent="rightShow(item)">
             <i class="el-icon-document"></i>
             <span slot="title"
