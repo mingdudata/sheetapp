@@ -21,6 +21,7 @@
 
 <script>
   import {getToken, getToken2, removeToken, removeToken2} from "../../utils/auth";
+  import {constantRouterMap} from "../../router";
 
   export default {
     data() {
@@ -34,9 +35,10 @@
     mounted() {
       let user = getToken2("user");
       if (user) {
-        this.squareUrl = user.headimage ? user.headimage :  user.headimgurl ?  user.headimgurl : "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
+        this.squareUrl = user.headimage ? user.headimage : user.headimgurl ? user.headimgurl : "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png";
       }
     },
+    inject: ['reload'],
     methods: {
       clickavatar() {
         console.log("20...")
@@ -46,7 +48,10 @@
       logout() {
         removeToken();
         removeToken2('user');
-        this.$router.push({path: '/login'})
+        constantRouterMap[1].children = [];
+        constantRouterMap[3].children = [];
+        this.$router.push({path: '/login'});
+        window.location.href="/sheetapp/login"
       }
     },
 

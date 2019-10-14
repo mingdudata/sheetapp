@@ -160,7 +160,11 @@
 
               setToken2("user", res.data.data);
 
-            this.$router.push({path: '/home'})
+            if(this.$route.query && this.$route.query.redirect) {
+              this.$router.push({path: this.$route.query.redirect})
+            } else {
+              this.$router.push({path: '/home'})
+            }
           }
           this.loading = false;
         }).catch(err => {

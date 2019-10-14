@@ -4,7 +4,7 @@ import Quill from '../../Home/quill';
 
 let p = "/home";
 
-let edit = (self, {path, id, id2, name}) => {
+let edit = (self, {path, id, id2, name, editor}) => {
   let args = {
     path: path,
     name: name,
@@ -13,6 +13,7 @@ let edit = (self, {path, id, id2, name}) => {
         return {
           id: id,
           id2: id,
+          editor: editor,
           style: {
             height: document.documentElement.clientHeight + "px"
           }
@@ -24,13 +25,35 @@ let edit = (self, {path, id, id2, name}) => {
         }
       },
       components: {Edit},
-      template: ' <Edit :sheet_id="id" :id2="id2"  @loadCatalogueData="loadCatalogueData"/>  '
+      template: ' <Edit :sheet_id="id" :id2="id2" :editor="editor"  @loadCatalogueData="loadCatalogueData"/>  '
     }),
   };
   return args;
 };
 
-let qtxt = (self, {path, id, id2, name}) => {
+let ops = {
+  theme: 'snow',
+  modules: {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{'header': 1}, {'header': 2}],
+      [{'list': 'ordered'}, {'list': 'bullet'}],
+      [{'script': 'sub'}, {'script': 'super'}],
+      [{'indent': '-1'}, {'indent': '+1'}],
+      [{'direction': 'rtl'}],
+      [{'size': ['small', false, 'large', 'huge']}],
+      [{'header': [1, 2, 3, 4, 5, 6, false]}],
+      [{'color': []}, {'background': []}],
+      [{'font': []}],
+      [{'align': []}],
+      ['clean'],
+      ['link', 'image', 'video']
+    ]
+  },
+  placeholder: '由此输入 ...'
+};
+let qtxt = (self, {path, id, name, editor}, options = ops, user_id = -1) => {
   let args = {
     path: path,
     name: name,
@@ -39,6 +62,9 @@ let qtxt = (self, {path, id, id2, name}) => {
         return {
           id: id,
           id2: id,
+          options: options,
+          editor: editor,
+          user_id: user_id,
           style: {
             height: document.documentElement.clientHeight + "px"
           }
@@ -50,12 +76,11 @@ let qtxt = (self, {path, id, id2, name}) => {
         }
       },
       components: {Quill},
-      template: ' <Quill :sheet_id="id"   @loadCatalogueData="loadCatalogueData"/>  '
+      template: ' <Quill :options="options" :user_id="user_id" :sheet_id="id" :editor="editor"   @loadCatalogueData="loadCatalogueData"/>  '
     }),
   };
   return args;
 };
-
 
 
 export {

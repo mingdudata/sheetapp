@@ -1,7 +1,8 @@
 <template xmlns:v-contextmenu="http://www.w3.org/1999/xhtml">
   <div class="contain" style="width: 100%; height: 100%; overflow: hidden" @click="hideInput">
-    <New :self="this" @create="pushIntoMenuData" v-if="showNewCompent == true" :navMenus="menuData" @receive="receive"
-         :dialogFormVisible="dialogFormVisible"/>
+    <create :self="this" @create="pushIntoMenuData" v-if="showNewCompent == true" :navMenus="menuData"
+            @receive="receive"
+            :dialogFormVisible="dialogFormVisible"/>
     <el-row class="tac" style="height: 100%; width: 100%;">
       <el-col style="height: 100%; width: 280px; background: #FBFBFB" :span="4">
         <el-scrollbar class="el-cala" style="height: 100%;  ">
@@ -11,7 +12,7 @@
           </div>
         </el-scrollbar>
       </el-col>
-      <el-col style="position: absolute; left: 280px; top: 0px; height: 100%" :span="20" >
+      <el-col style="position: absolute; left: 280px; top: 0px; height: 100%" :span="20">
         <sheet/>
       </el-col>
     </el-row>
@@ -21,7 +22,7 @@
 <script>
   import ElTree from './ElTree'
   import Views from './headViews'
-  import New from './new'
+  import Create from './create'
   import {styles} from "../styles";
   import {constantRouterMap} from "../../router";
   import Sheet from './sheet'
@@ -34,7 +35,7 @@
   export default {
     name: "index",
     components: {
-      New,
+      Create,
       ElTree,
       Sheet,
       Views
@@ -97,15 +98,15 @@
       }
     },
     mounted() {
-
       this.loadCataloguePromise().then(res => {
         this.setMenuData(res.data);
         this.showNewCompent = true
 
         let routerMap = [];
         let pm = [];
-        routerMap.push(constantRouterMap[1])
-        this.create_route_b(this.menuData, pm, p)
+        routerMap.push(constantRouterMap[1]);
+        this.create_route_b(this.menuData, pm, p);
+
         routerMap[0].children = pm;
         this.$router.addRoutes(routerMap);
 
@@ -394,13 +395,26 @@
             this.create_route_b(a_dir.childs, arr, p)
           } else {
             console.log(a_dir.entity);
-            let {type} = a_dir.entity;
-            if(type === 1) {
-               let args = edit(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
-               arr.push(args);
-            } else if(type == 3) {
-              let args = qtxt(this, {path: p + a_dir.entity.path + "", id: a_dir.entity.sheet_id, id2: a_dir.entity.id, name: a_dir.entity.alias });
-            arr.push(args);
+            const {type, sheet} = a_dir.entity;
+            const {editor} = sheet;
+            if (type === 1) {
+              let args = edit(this, {
+                path: p + a_dir.entity.path + "",
+                id: a_dir.entity.sheet_id,
+                id2: a_dir.entity.id,
+                name: a_dir.entity.alias,
+                editor: editor
+              });
+              arr.push(args);
+            } else if (type == 3) {
+              let args = qtxt(this, {
+                path: p + a_dir.entity.path + "",
+                id: a_dir.entity.sheet_id,
+                id2: a_dir.entity.id,
+                name: a_dir.entity.alias,
+                editor: editor
+              });
+              arr.push(args);
             }
           }
         })

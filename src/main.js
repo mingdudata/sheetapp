@@ -7,30 +7,41 @@ import router, {constantRouterMap} from './router'
 import axios from 'axios'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css';
-import {getToken, setToken, setToken2 ,getToken2} from './utils/auth'
+import {getToken, setToken, setToken2, getToken2} from './utils/auth'
 import Element from 'element-ui'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import {loginByWeixin} from "./components/api/login";
 import Edit from './components/component/edit'
- import './axios_config'
+import './axios_config'
+import {qtxt} from "./components/component/edit/edit_component";
+
 Vue.use(Edit);
 Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
-Vue.prototype.EDIT = 'http://180.169.75.199:5004/edit';
+Vue.prototype.EDIT = 'http://192.168.31.9:5018/edit';
 Vue.prototype.$axios = axios;
 Vue.use(Element)
 
 router.beforeEach((to, from, next) => {
-  if (getToken2("user")) {
+  if (getToken2("user") || to.path.indexOf("share") !== -1) {
     if (to.path == '/weixincallback') {
       next('/home')
     } else if (to.path == '/login') {
       next('/home')
-    } else {
-      if (to.path != "/home" && to.path != "/document" && constantRouterMap[1].children.length <= 0) {
+    } else if(to.path === '/share') {
+      next();
+    }else {
+      if (to.path.indexOf("/share/") !== -1 && constantRouterMap[3].children.length <= 0) {
+        next({
+          path: '/share',
+          query: {
+            redirect: to.fullPath
+          }
+        })
+      } else if (to.path != "/home" && to.path.indexOf("/share/") === -1 && to.path != "/document" && constantRouterMap[1].children.length <= 0) {
         next({
           path: '/home',
           query: {
@@ -44,7 +55,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.path == '/weixincallback') {
-      if(to.query) {
+      if (to.query) {
         setToken2("user", to.query);
         setToken(to.query.nickname);
       }

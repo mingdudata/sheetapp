@@ -3,12 +3,12 @@
     <div>
       <div style="margin-left: 20px; margin-top: 10px; display: inline-block; letter-spacing: 5px">
       <span @click="handler(1)">
-        <span v-if="change2 == 1" style="font-size: 26px; color: #0EAA10"><i class="el-icon-tickets"></i></span>
+        <span v-if="viewId == 1" style="font-size: 26px; color: #0EAA10"><i class="el-icon-tickets"></i></span>
         <span class="hover-tip" data-tooltip="打开最近" v-else style="font-size: 26px;  ">
           <i class="el-icon-document"></i></span>
       </span>
         <span @click="handler(2)">
-        <span v-if="change2 == 2" style="font-size: 26px; color: #0EAA10">
+        <span v-if="viewId == 2" style="font-size: 26px; color: #0EAA10">
           <i class="el-icon-folder-opened"></i>
         </span>
         <span class="hover-tip" data-tooltip="打开目录" v-else style="font-size: 26px">
@@ -25,32 +25,28 @@
 
     <div style="min-height: 100px" element-loading-spinner="el-icon-loading">
       <div v-show="change == 1">
+
         <div v-contextmenu:contextmenu>
           <recently-open :data="data" @getData="getData" @opensearchpane="handler"/>
           <v-contextmenu ref="contextmenu" @contextmenu="folderOrFile">
-            <v-contextmenu-item @click="issue" v-if="!disableFile">发布</v-contextmenu-item>
-            <v-contextmenu-item @click="createMD" v-if="!disableFile">创建md文件</v-contextmenu-item>
-            <v-contextmenu-item @click="revisions" v-if="!disableFolder">恢复历史版本</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile" divider>修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
+            <context-menu :disableFile="disableFile" :disableFolder="disableFolder"
+                          @issue="issue" @createMD="createMD" @revisions="revisions" @renameFile="renameFile"
+                          :disableDelete="disableDelete" :disableRemove="disableRemove" :isIssue="isIssue"
+                          @removeFile="removeFile"/>
           </v-contextmenu>
         </div>
       </div>
       <div v-show="change == 2">
-        <div v-contextmenu:contextmenu>
-          <!--          {{menuData}}-->
+        <div class="folder_menu" v-contextmenu:contextmenu>
           <el-menu background-color="#FBFBFB" active-text-color="rgb(14, 170, 16)" router :default-active="index"
                    @select="open">
             <nav-menu :navMenus="menuData"/>
           </el-menu>
           <v-contextmenu ref="contextmenu" @contextmenu="folderOrFile">
-            <v-contextmenu-item @click="issue" v-if="!disableFile">发布</v-contextmenu-item>
-            <v-contextmenu-item @click="createMD" v-if="!disableFile">创建md文件</v-contextmenu-item>
-            <v-contextmenu-item @click="revisions" v-if="!disableFolder">恢复历史版本</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile">修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="renameFile" divider>修改名称</v-contextmenu-item>
-            <v-contextmenu-item @click="removeFile">删除</v-contextmenu-item>
+            <context-menu :disableFile="disableFile" :disableFolder="disableFolder" :disableIssue="disableIssue"
+                          :disableDelete="disableDelete" :disableRemove="disableRemove" :isIssue="isIssue"
+                          @issue="issue" @createMD="createMD" @revisions="revisions" @renameFile="renameFile"
+                          @removeFile="removeFile"/>
           </v-contextmenu>
         </div>
       </div>
@@ -70,8 +66,9 @@
 
     <div>
       <md-dialog :self="this" @create="pushIntoMenuData" :parent="parentMD" :navMenus="menuData" @receive="receive"
-                 :dialogFormVisible="dialogFormVisible" ref="md" />
-      <issue-dialog  @receive="receive2" :entity="entity" :dialogFormVisible="issueDialogFormVisible"/>
+                 :dialogFormVisible="dialogFormVisible" ref="md"/>
+      <issue-dialog @receive="receive2" :entity="entity" :navMenus="menuData"
+                    :dialogFormVisible="issueDialogFormVisible" @loadCatalogueData="loadCatalogueData"/>
     </div>
   </div>
 </template>
@@ -83,6 +80,7 @@
   import SearchOpen from './SearchOpen'
   import MdDialog from './mdDialog'
   import IssueDialog from './issueDialog'
+  import ContextMenu from './contextmenu'
   import {
     changeFileNameApi,
     getOpenFileApi,
@@ -97,6 +95,7 @@
   import {dirBuilder} from "../core/builder";
   import {qtxt, p} from "../component/edit/edit_component";
   import {constantRouterMap} from "../../router";
+  import {searchName} from "../config";
 
   export default {
     name: "views",
@@ -107,11 +106,12 @@
       SearchOpen,
       MdDialog,
       IssueDialog,
+      ContextMenu
     },
     data() {
       return {
         change: 1,
-        change2: 1,
+        viewId: 1,
         label_change: 1,
         data: [],
         loading: false,
@@ -120,10 +120,15 @@
         input: "",
         disableFolder: false,
         disableFile: false,
+        disableIssue: false,
+        disableDelete: false,
         dialogFormVisible: false,
+        disableRemove: false,
         parentMD: "",
         searchEntity: null,
         issueDialogFormVisible: false,
+        rootFolder: null,
+        isIssue: false
       }
     },
     watch: {
@@ -133,6 +138,23 @@
       },
       menuData() {
         this.getData("");
+      },
+      change() {
+        let {change} = this;
+        if (change === 2) {
+          setTimeout(() => {
+            let dom = document.getElementsByClassName('el-menu-item is-active');
+            let dom2 = document.getElementById("quill_id");
+            if (dom2) {
+              dom2.style['height'] = '0px';
+              dom[dom.length - 1].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+              dom2.style['height'] = '100%';
+            } else {
+              dom[dom.length - 1].scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+            }
+            // }
+          }, 50);
+        }
       }
     },
     computed: {
@@ -145,6 +167,7 @@
     },
     mounted() {
       this.index = this.active_index;
+      this.getData("");
     },
     methods: {
       ...mapMutations({
@@ -181,16 +204,57 @@
         this.setMenuData(value);
       },
       folderOrFile(e) {
-        let {type} = this.entity;
+        console.log(this.entity);
+        let {type, parent, alias} = this.entity;
+        let {sheet} = this.entity;
+        if (sheet) {
+          let {editor} = sheet;
+          if (!sheet || !editor || editor === 2 || editor === 3) {
+            this.disableIssue = true;
+            this.disableFolder = true;
+            this.disableFile = true;
+            this.disableDelete = true;
+            return;
+          }
+        }
+
         if (type === 2) {
           this.disableFolder = true;
           this.disableFile = false;
+          this.disableDelete = false;
+          this.disableRemove = false;
+          if (parent === '/') {
+            this.disableIssue = false;
+          } else {
+            this.disableIssue = true;
+          }
         } else if (type === 1) {
           this.disableFolder = false;
+          this.disableDelete = false;
+          this.disableRemove = false;
           this.disableFile = true;
+          this.disableIssue = true;
         } else {
+          this.disableDelete = false;
+          this.disableRemove = false;
+          this.disableIssue = true;
           this.disableFolder = true;
           this.disableFile = true;
+        }
+
+        // 如果右击的是 ‘介绍’，则isIssue = true
+        this.isIssue = false;
+        if (alias === searchName) {
+          this.rootFolder = null;
+          this.searchRootFolder(this.menuData, parent, searchName);
+          if (this.rootFolder) {
+            const {state} = this.rootFolder.sheet;
+            if (state) {
+              this.isIssue = true;
+              this.disableDelete = true;
+              this.disableRemove = true;
+            }
+          }
         }
       },
       revisionOpen() {
@@ -260,6 +324,17 @@
           }
         })
       },
+      searchRootFolder(dir, path, name) {
+        dir.forEach((a_dir) => {
+          if (a_dir.entity.path === path && a_dir.entity.parent === "/") {
+            this.rootFolder = a_dir.entity;
+          }
+
+          if (a_dir.childs) {
+            this.searchRootFolder(a_dir.childs, path, name)
+          }
+        })
+      },
       issue() {
         let user = getToken2('user');
         if (!user) {
@@ -271,7 +346,7 @@
           return;
         }
         this.searchEntity = null;
-        this.searchMenuDataIndex(this.menuData, this.entity.path, '介绍.qtxt');
+        this.searchMenuDataIndex(this.menuData, this.entity.path, searchName);
         if (this.searchEntity === null) {
           addQTxtApi(this.$axios, this.EDIT, {
             alias: '介绍',
@@ -298,6 +373,7 @@
                   id: entity.sheet_id,
                   id2: entity.sheet_id2
                 }));
+                console.log(constantRouterMap[1]);
                 routerMap.push(constantRouterMap[1])
                 this.$router.addRoutes(routerMap);
                 this.$router.push({path: p + entity.path + ""})
@@ -362,6 +438,7 @@
         removeFileApi(this.$axios, this.EDIT, args).then(res => {
           this.$message({message: '删除成功', type: 'success', showClose: true});
           this.$emit("loadCatalogueData");
+          this.$router.push({path: '/home'})
         });
       },
       renameFile() {
@@ -380,7 +457,7 @@
         if (value == 1) {
           this.getData("")
         }
-        this.change2 = value;
+        this.viewId = value;
         this.change = value;
       },
       setChange(value) {

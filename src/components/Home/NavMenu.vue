@@ -2,7 +2,7 @@
   <div class="navMenu">
     <template v-for="navMenu in navMenus">
       <!-- 最后一级菜单 -->
-      <el-menu-item style="display: block;" v-if="!navMenu.childs&&navMenu.entity && navMenu.entity.alias != 'hide'"
+      <el-menu-item class="_folder" style="display: block;" v-if="!navMenu.childs&&navMenu.entity && navMenu.entity.alias != 'hide'"
                       :key="navMenu.entity.id" :data="navMenu" :index="'/home' + navMenu.entity.path + ''">
         <div @contextmenu.prevent="rightShow(navMenu.entity)">
           <i :class="navMenu.entity.icon"></i>
@@ -20,7 +20,7 @@
                   :index="'/home' + navMenu.entity.path + ''">
         <template  slot="title">
           <div style="position: relative; left: -11px" @contextmenu.prevent="rightShow(navMenu.entity)">
-            <i v-if="navMenu.entity.sheet.state" style="color: #0EAA10" :class="navMenu.entity.icon"></i>
+            <i v-if="navMenu.entity.sheet.state" style="color: #09cc7e" :class="navMenu.entity.icon"></i>
             <i v-else :class="navMenu.entity.icon"></i>
             <span> {{navMenu.entity.alias}}</span>
           </div>

@@ -5,10 +5,10 @@
         <Aside @changeType="changeType"/>
       </el-col>
       <el-col :style="my_style" :span="23">
-        <div style="height: 100%" v-if="type == 1">
-          <Index />
+        <div style="height: 100%" v-if="panneId == 1">
+          <file-explore />
         </div>
-        <div  style="height: 100%" v-else-if="type == 2">
+        <div  style="height: 100%" v-else-if="panneId == 2">
           <min-app />
         </div>
       </el-col>
@@ -19,7 +19,7 @@
 <script>
   import Content from './content'
   import Aside from './aside'
-  import Index from './index'
+  import FileExplore from './fileExplore'
   import MinApp from '../Minapp/minapp'
   export default {
     name: "home",
@@ -44,12 +44,12 @@
     components: {
       Content,
       Aside,
-      Index,
+      FileExplore,
       MinApp
     },
     methods: {
       changeType(v) {
-        this.type = v;
+        this.panneId = v;
       }
     },
     data() {
@@ -66,7 +66,7 @@
           left: '68px',
           top: '0px'
         },
-        type: 1
+        panneId: 1
       }
     }
   }

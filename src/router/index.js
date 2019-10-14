@@ -5,6 +5,7 @@ import Login from '../components/Login/login'
 import Home from '../components/Home/home'
 import Document from '../components/Home/document'
 import WeiXinCallBack from '../components/Login/weixincallback'
+import Share from '../components/share/share';
 Vue.use(Router)
 
 
@@ -22,6 +23,11 @@ let constantRouterMap = [
   {
     path: '/document',
     component: Document,
+  },
+  {
+    path: '/share',
+    component: Share,
+    children: [],
   },
   {
     path: '/weixincallback',

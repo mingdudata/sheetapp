@@ -14,12 +14,12 @@
 <script>
   import ElTree from './ElTree'
   import NavMenu from "./NavMenu.vue";
-  import New from './new'
+  import Create from './create'
 
   export default {
     components: {
       NavMenu: NavMenu,
-      New,
+      Create,
       ElTree
     },
     data() {

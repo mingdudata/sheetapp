@@ -34,6 +34,7 @@
   import {dirBuilder} from "../core/builder";
   import {constantRouterMap} from "../../router";
   import {edit, p} from "../component/edit/edit_component";
+  import {ignore} from "../config";
 
   export default {
     props: ["dialogFormVisible", 'navMenus', "self"],
@@ -43,14 +44,15 @@
       },
       filterNavMenus(dir) {
         dir.forEach((a_dir) => {
-          if (a_dir.childs) {
+          let {alias} = a_dir.entity;
+          if (a_dir.childs && ignore !== alias) {
             this.folder.push(a_dir.entity)
             this.filterNavMenus(a_dir.childs)
           }
         })
       },
       addAFile() {
-      console.log(".")
+        console.log(".")
         if (this.form.name == '' || this.form.folderType == '' || this.form.folder == '') {
           this.$message({
             message: '文件信息不能为空',
@@ -95,7 +97,8 @@
               constantRouterMap[1].children.push(edit(this.self, {
                 path: p + entity.path + "",
                 id: entity.sheet_id,
-                id2: entity.sheet_id2
+                id2: entity.sheet_id2,
+                 name: entity.alias,
               }));
               routerMap.push(constantRouterMap[1])
               this.$router.addRoutes(routerMap);
@@ -126,8 +129,10 @@
     watch: {
       dialogFormVisible(o_v, n_v) {
         this.copyDialogFormVisible = this.dialogFormVisible;
-        this.addRootDirectory();
-        this.filterNavMenus(this.navMenus);
+        if (this.copyDialogFormVisible !== false) {
+          this.addRootDirectory();
+          this.filterNavMenus(this.navMenus);
+        }
         this.form.folder = "";
         console.log(41, this.form.folder, this.navMenus)
       },
