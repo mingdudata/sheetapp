@@ -74,7 +74,7 @@
                 ? JSON.parse(res.sheet_details) : res.sheet_details;
               args['flex'] = res.neat_flex ? res.neat_flex.neat_flex : {};
               // data.setData(args);
-              self.xs.data.setData(args);
+              self.xs.data.setData(args,self.xs.sheet, true);
               let {recalc, table} = self.xs.sheet.getTable();
               if (recalc === false) {
                 table.proxy.diff = 306;
@@ -178,7 +178,7 @@
           user_id: getToken2('user').id,
           sheet_id: this.sheet_id,
           async getData(axios, alias, user_id, name, sheet_id) {
-            let res = await axios.post("http://180.169.75.199:5004/edit/edit_find_by_alias", {
+            let res = await axios.post("http://192.168.31.9:5018/edit/edit_find_by_alias", {
               alias: alias,
               user_id: user_id,
               name: name,

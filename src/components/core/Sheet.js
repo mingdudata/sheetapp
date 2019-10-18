@@ -22,8 +22,8 @@ export default class Sheet {
   }
 
   setText(text) {
-    let p1 = this.inputText.substring(0, this.pos);
-    let p2 = this.inputText.substring(this.pos , this.inputText.length);
+    // let p1 = this.inputText.substring(0, this.pos);
+    // let p2 = this.inputText.substring(this.pos , this.inputText.length);
     this.inputText = text;
   }
 }
