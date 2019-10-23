@@ -1,5 +1,6 @@
 const loginUrl = "192.168.31.9:8023";
 const wsUrl = "ws://192.168.31.9:5018/edit";
+const httpUrl = "http://192.168.31.9:5018/edit";
 const issueUrl = "http://192.168.31.9:1111/sheetapp/share/";
 const searchName = '介绍';
 
@@ -10,4 +11,5 @@ export {
   issueUrl,
   searchName,
   ignore,
+  httpUrl,
 }

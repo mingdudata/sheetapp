@@ -15,13 +15,14 @@ import {loginByWeixin} from "./components/api/login";
 import Edit from './components/component/edit'
 import './axios_config'
 import {qtxt} from "./components/component/edit/edit_component";
+import {httpUrl} from "./components/config";
 
 Vue.use(Edit);
 Vue.use(contentmenu);
 Vue.config.productionTip = false
 
 Vue.prototype.HOST = '/api'
-Vue.prototype.EDIT = 'http://192.168.31.9:5018/edit';
+Vue.prototype.EDIT = httpUrl;
 Vue.prototype.$axios = axios;
 Vue.use(Element)
 
