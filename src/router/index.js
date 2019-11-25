@@ -6,7 +6,14 @@ import Home from '../components/Home/home'
 import Document from '../components/Home/document'
 import WeiXinCallBack from '../components/Login/weixincallback'
 import Share from '../components/share/share';
-Vue.use(Router)
+Vue.use(Router);
+
+// const Edit = () => import("../components/Edit");
+// const Login = () => import("../components/Login/login");
+// const Home = () => import("../components/Home/home");
+// const Document = () => import("../components/Home/document");
+// const WeiXinCallBack = () => import("../components/Login/weixincallback");
+// const Share = () => import("../components/share/share");
 
 
 let constantRouterMap = [

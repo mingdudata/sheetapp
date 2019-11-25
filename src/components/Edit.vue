@@ -6,7 +6,7 @@
 
 <script>
   import {p} from "./component/edit/edit_component";
-  import Xspreadsheet from 'x-spreadsheet-master'
+  import Spreadsheet from 'financial-cell'
   import {styles, wlandOption} from "./styles";
   import Sheet from "./core/Sheet"
   import {mapGetters, mapMutations} from 'vuex'
@@ -41,7 +41,7 @@
     },
     mounted() {
       this.mo_time = setTimeout(() => {
-        if (this.sheet_id == null || this.sheet_id == undefined) {
+        if (this.sheet_id == null || this.sheet_id === undefined) {
           this.$router.push({path: '/home'});
           return;
         }
@@ -98,25 +98,25 @@
       clearTimeout(this.mo_time);
       clearTimeout(this.mo_time2)
 
-      if (!this.xs) {
-        return
-      }
-      let info = this.xs.getEditorStatus();
-      if (this.sheet != null) {
-        // 传数据
-        let text = this.xs.getText(this.sheet.alias, this.sheet.inputText,
-          this.sheet.pos);
-        this.sheet.setText(text);
-        this.setSheet(this.sheet);
-      }
-
-      if (info.status == true && typeof this.sh != 'string') {
-        this.sh.setProp(info.ri, info.ci, info.inputText, info.status, info.pos);
-        this.setSheet(this.sh);
-      } else {
-        this.date = "";
-        this.xs.removeEvent();
-      }
+      // if (!this.xs) {
+      //   return
+      // }
+      // let info = this.xs.getEditorStatus();
+      // if (this.sheet != null) {
+      //   // 传数据
+      //   let text = this.xs.getText(this.sheet.alias, this.sheet.inputText,
+      //     this.sheet.pos);
+      //   this.sheet.setText(text);
+      //   this.setSheet(this.sheet);
+      // }
+      //
+      // if (info.status == true && typeof this.sh != 'string') {
+      //   this.sh.setProp(info.ri, info.ci, info.inputText, info.status, info.pos);
+      //   this.setSheet(this.sh);
+      // } else {
+      //   this.date = "";
+      //   this.xs.removeEvent();
+      // }
     },
     methods: {
       ...mapMutations({
@@ -414,7 +414,7 @@
               d1.removeChild(d2);
             }
 
-            let xs = new Xspreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods(), this.$route.name);
+            let xs = x.spreadsheet('#x-spreadsheet-demo', this.options, this.sheetMethods, this.$route.name);
             this.setXs(xs);
 
             this.xs.loadData(
@@ -485,18 +485,18 @@
               this.xs.setDataSettings(false);
             }
 
-            if (this.sheet && this.sheet.status === true && this.sheet.name != this.$route.path) {
-              console.log(this.xs);
-              this.xs.setEditorText(this.sheet.inputText, this.sheet.pos);
-            } else if (this.sheet && this.sheet.status === true && this.sheet.name == this.$route.path) {
-              console.log(this.sheet)
-              setTimeout(() => {
-                this.xs.setTextEnd(this.sheet.inputText, this.sheet.ri, this.sheet.ci);
-                this.setSheet(null);
-                this.sh = (!this.sheet || this.sheet.status === false) ? new Sheet(this.$route.path) : "";
-
-              }, 500);
-            }
+            // if (this.sheet && this.sheet.status === true && this.sheet.name != this.$route.path) {
+            //   console.log(this.xs);
+            //   this.xs.setEditorText(this.sheet.inputText, this.sheet.pos);
+            // } else if (this.sheet && this.sheet.status === true && this.sheet.name == this.$route.path) {
+            //   console.log(this.sheet)
+            //   setTimeout(() => {
+            //     this.xs.setTextEnd(this.sheet.inputText, this.sheet.ri, this.sheet.ci);
+            //     this.setSheet(null);
+            //     this.sh = (!this.sheet || this.sheet.status === false) ? new Sheet(this.$route.path) : "";
+            //
+            //   }, 500);
+            // }
           }
         )
       }
