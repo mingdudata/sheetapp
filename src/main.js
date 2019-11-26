@@ -12,12 +12,9 @@ import Element from 'element-ui'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
 import {loginByWeixin} from "./components/api/login";
-import Edit from './components/component/edit'
-import './axios_config'
 import {qtxt} from "./components/component/edit/edit_component";
 import {httpUrl} from "./components/config";
-
-Vue.use(Edit);
+import x from 'financial-cell'
 Vue.use(contentmenu);
 Vue.config.productionTip = false
 

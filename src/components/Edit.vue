@@ -6,7 +6,6 @@
 
 <script>
   import {p} from "./component/edit/edit_component";
-  import Spreadsheet from 'financial-cell'
   import {styles, wlandOption} from "./styles";
   import Sheet from "./core/Sheet"
   import {mapGetters, mapMutations} from 'vuex'

@@ -29,13 +29,6 @@ module.exports = {
       '@': resolve('src'),
     }
   },
-  // externals: {
-  //   'vue': 'Vue', // 左侧vue是我们自己引入时候要用的，右侧是开发依赖库的主人定义的不能修改
-  //   'vue-router': 'VueRouter',
-  //   'vuex': 'Vuex',
-  //   'axios': 'axios',
-  //   'element-ui': 'ELEMENT',
-  // },
   module: {
     rules: [
       {
@@ -46,14 +39,6 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
-      },
-     {
-          test: /\.worker\.js$/,
-          options: {
-            limit: 10000,
-            name: utils.assetsPath('/test.worker.js')
-          },
-           loader: 'worker-loader',
       },
       {
         test: /\.js$/,

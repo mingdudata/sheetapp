@@ -1,12 +1,12 @@
 <template>
   <div style="height: 100%">
-    <el-tabs class="marinner" @tab-click="tabClick" @dblclick.native="changeTabName" v-model="editableTabsValue"
-             type="card" closable
-             @edit="handleTabsEdit">
-       <el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title"
-                   :name="item.name">
-      </el-tab-pane>
-    </el-tabs>
+    <!--<el-tabs class="marinner" @tab-click="tabClick" @dblclick.native="changeTabName" v-model="editableTabsValue"-->
+             <!--type="card" closable-->
+             <!--@edit="handleTabsEdit">-->
+       <!--<el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title"-->
+                   <!--:name="item.name">-->
+      <!--</el-tab-pane>-->
+    <!--</el-tabs>-->
      <router-view/>
   </div>
 </template>

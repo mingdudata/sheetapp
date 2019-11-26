@@ -17,7 +17,6 @@
 </template>
 
 <script>
-  import Content from './content'
   import Aside from './aside'
   import FileExplore from './fileExplore'
   import MinApp from '../Minapp/minapp'
@@ -42,7 +41,6 @@
       }
     },
     components: {
-      Content,
       Aside,
       FileExplore,
       MinApp

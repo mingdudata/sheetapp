@@ -77,7 +77,6 @@
   import NavMenu from "./NavMenu.vue";
   import RecentlyOpen from "./RecentlyOpen"
   import Search from './search'
-  import SearchOpen from './SearchOpen'
   import MdDialog from './mdDialog'
   import IssueDialog from './issueDialog'
   import ContextMenu from './contextmenu'
@@ -103,7 +102,6 @@
       NavMenu,
       RecentlyOpen,
       Search,
-      SearchOpen,
       MdDialog,
       IssueDialog,
       ContextMenu
