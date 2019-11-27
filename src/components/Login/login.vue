@@ -156,7 +156,9 @@
               message: '登录成功',
               type: 'success'
             });
-            setToken(this.ruleForm.username);
+            console.log(res.data.data);
+
+            setToken(res.data.data.id);
 
               setToken2("user", res.data.data);
 

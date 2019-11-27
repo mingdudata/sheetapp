@@ -55,7 +55,8 @@ router.beforeEach((to, from, next) => {
     if (to.path == '/weixincallback') {
       if (to.query) {
         setToken2("user", to.query);
-        setToken(to.query.nickname);
+
+        setToken(to.query.id);
       }
       window.close()
     } else if (to.path == '/login') { //如果是登录页面路径，就直接next()

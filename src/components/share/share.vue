@@ -171,7 +171,7 @@
       lookEvent() {
         if (!this.login) {
           this.$router.push({
-            path: '/login', query: {
+            path: '/', query: {
               redirect: this.$route.path
             }
           });
@@ -197,7 +197,7 @@
       likeEvent() {
         if (!this.login) {
           this.$router.push({
-            path: '/login', query: {
+            path: '/', query: {
               redirect: this.$route.path
             }
           });
@@ -215,7 +215,7 @@
       saveEvent() {
         if (!this.login) {
           this.$router.push({
-            path: '/login', query: {
+            path: '/', query: {
               redirect: this.$route.path
             }
           });

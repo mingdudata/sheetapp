@@ -340,7 +340,7 @@
             message: '您还没有登录哦~',
             type: 'error'
           });
-          this.$router.push({path: '/login'});
+          this.$router.push({path: '/'});
           return;
         }
         this.searchEntity = null;

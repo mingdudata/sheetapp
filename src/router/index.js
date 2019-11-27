@@ -4,7 +4,7 @@ import Edit from '../components/Edit'
 import Login from '../components/Login/login'
 import Home from '../components/Home/home'
 import Document from '../components/Home/document'
-// import WeiXinCallBack from '../components/Login/weixincallback'
+import WeiXinCallBack from '../components/Login/weixincallback'
 import Share from '../components/share/share';
 Vue.use(Router);
 
@@ -36,11 +36,15 @@ let constantRouterMap = [
     component: Share,
     children: [],
   },
+  {
+    path: '/weixincallback',
+    component: WeiXinCallBack,
+  },
 ];
 export {constantRouterMap}
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   base: "sheetapp",
   routes: constantRouterMap
 })

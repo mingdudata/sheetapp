@@ -76,6 +76,7 @@
         console.log("26", keyData, key)
 
         setTimeout(() => {
+          console.log("openFileRecently", args);
           openFileRecentlyApi(this.$axios, this.EDIT, args).then(() => {
             this.setActiveIndex(key);
           });

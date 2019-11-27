@@ -320,7 +320,7 @@
             type: 'error'
           });
           removeToken2('user');
-          this.$router.push({path: '/login'})
+          this.$router.push({path: '/'})
           return;
         }
 
@@ -430,6 +430,7 @@
           user_id: getToken2('user').id,
           file_id: index
         };
+        console.log(433);
         openFileRecentlyApi(this.$axios, this.EDIT, args);
       },
       open(index, indexPath) {

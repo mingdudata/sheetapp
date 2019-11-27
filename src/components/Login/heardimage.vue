@@ -50,8 +50,8 @@
         removeToken2('user');
         constantRouterMap[1].children = [];
         constantRouterMap[3].children = [];
-        this.$router.push({path: '/login'});
-        window.location.href="/sheetapp/login"
+        this.$router.push({path: '/'});
+        window.location.href="/sheetapp/#/login"
       }
     },
 

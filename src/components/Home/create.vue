@@ -67,7 +67,7 @@
             type: 'error'
           });
           this.removeToken2('user');
-          this.$router.push({path: '/login'})
+          this.$router.push({path: '/'})
           return;
         }
         this.loading = true;
